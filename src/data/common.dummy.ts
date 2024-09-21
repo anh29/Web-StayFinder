@@ -2,33 +2,29 @@ import { HeaderNav } from "types/common";
 
 export const headerNavDummy: HeaderNav[] = [
   {
-    title: "Về StayFinder",
-    href: "/",
-    children: [
-      {
-        title: "Proposal",
-        href: "/",
-      },
-      {
-        title: "Sổ tay thí sinh",
-        href: "/",
-      },
-      {
-        title: "Mentor Desk",
-        href: "/",
-      },
-    ],
+    title: "Home",
+    href: "/#",
+    // children: [
+    //   {
+    //     title: "Proposal",
+    //     href: "/",
+    //   },
+    // ],
   },
   {
-    title: "Thể lệ cuộc thi",
+    title: "Hotels",
     href: "/rules",
   },
   {
-    title: "Lịch trình",
+    title: "Rooms",
     href: "/#schedules",
   },
   {
-    title: "Đối tác",
+    title: "About",
+    href: "/#sponsors",
+  },
+  {
+    title: "Contact",
     href: "/#sponsors",
   },
 ];
