@@ -1,8 +1,8 @@
 import { Box, Button, Heading, Image, Stack, Text } from "@chakra-ui/react";
-import { FiUser, FiCamera, FiMapPin } from "react-icons/fi";
 import ElementEffectEntering from "components/shared/effect/ElementEffectEntering";
 import { banner } from "assets/images";
 import StatBox from "components/elements/StatBox";
+import { STATISTICS } from "./data";
 
 export interface HeroSectionProps {}
 
@@ -103,47 +103,16 @@ export default function HeroSection(props: HeroSectionProps) {
             pt={{ md: "3rem" }}
             borderTop={{ md: "1px solid #E5E5E5" }}
           >
-            <StatBox icon={FiUser} direction="row">
-              <Text fontSize="1.25rem" fontWeight="bold" color="#152C5B">
-                250
-                <Text
-                  as="span"
-                  color={"#B0B0B0"}
-                  fontWeight={"light"}
-                  ml="0.5rem"
-                >
-                  user
-                </Text>
-              </Text>
-            </StatBox>
-
-            <StatBox icon={FiCamera} direction="row">
-              <Text fontSize="1.25rem" fontWeight="bold" color="#152C5B">
-                200
-                <Text
-                  as="span"
-                  color={"#B0B0B0"}
-                  fontWeight={"light"}
-                  ml="0.5rem"
-                >
-                  treasure
-                </Text>
-              </Text>
-            </StatBox>
-
-            <StatBox icon={FiMapPin} direction="row">
-              <Text fontSize="1.25rem" fontWeight="bold" color="#152C5B">
-                10
-                <Text
-                  as="span"
-                  color={"#B0B0B0"}
-                  fontWeight={"light"}
-                  ml="0.5rem"
-                >
-                  cities
-                </Text>
-              </Text>
-            </StatBox>
+            {STATISTICS.map(({ icon: Icon, count, label }, index) => (
+      <StatBox key={index} icon={Icon} direction="row">
+        <Text fontSize="1.25rem" fontWeight="bold" color="#152C5B">
+          {count}
+          <Text as="span" color={"#B0B0B0"} fontWeight={"light"} ml="0.5rem">
+            {label}
+          </Text>
+        </Text>
+      </StatBox>
+    ))}
           </Stack>
         </ElementEffectEntering>
       </Box>

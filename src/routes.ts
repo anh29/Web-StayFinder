@@ -1,7 +1,7 @@
 import { BasicRoute } from "components/elements/AppRouter";
 import Layout from "components/layouts/Layout";
-import Rules from "pages/Rules";
 import Home from "pages/home/Home";
+import Hotels from "pages/hotels/Hotels";
 
 export const routes: BasicRoute[] = [
   {
@@ -11,9 +11,9 @@ export const routes: BasicRoute[] = [
     routes: [
       { path: "/", label: "Home", component: Home, exact: true },
       {
-        path: "/rules",
-        label: "rules",
-        component: Rules,
+        path: "/hotels",
+        label: "hotels",
+        component: Hotels,
         exact: true,
       },
     ],

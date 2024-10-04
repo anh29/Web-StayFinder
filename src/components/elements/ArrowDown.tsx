@@ -1,4 +1,5 @@
 import { Box, keyframes } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
 const moveChevron = keyframes`
   25% { opacity: 1; }
@@ -22,7 +23,7 @@ const Chevron = ({ delay }: { delay: number }) => (
       left: "0",
       h: "100%",
       w: "50%",
-      bg: "black",
+      bg: "main",
       transform: "skewY(30deg)",
     }}
     _after={{
@@ -32,18 +33,47 @@ const Chevron = ({ delay }: { delay: number }) => (
       right: "0",
       h: "100%",
       w: "50%",
-      bg: "black",
+      bg: "main",
       transform: "skewY(-30deg)",
     }}
   />
 );
 
-const ArrowDown = () => (
-  <Box display="flex" justifyContent="center" alignItems="center" w="100%" pos="relative">
-    <Chevron delay={0} />
-    <Chevron delay={1} />
-    <Chevron delay={2} />
-  </Box>
-);
+const ArrowDown = () => {
+  const [showArrowDown, setShowArrowDown] = useState<boolean>(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Calculate the bottom of the document
+      const scrolledFromTop = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      const totalHeight = document.body.scrollHeight;
+
+      // Check if user has scrolled to the bottom
+      if (Math.ceil(scrolledFromTop + viewportHeight) >= totalHeight) {
+        setShowArrowDown(false);
+      } else {
+        setShowArrowDown(true);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  return (
+    showArrowDown && (
+      <Box position="fixed" bottom="12%" left="50%" transform="translateX(-50%)">
+        <Box display="flex" justifyContent="center" alignItems="center" w="100%" pos="relative">
+          <Chevron delay={0} />
+          <Chevron delay={1} />
+          <Chevron delay={2} />
+        </Box>
+      </Box>
+    )
+  );
+};
 
 export default ArrowDown;

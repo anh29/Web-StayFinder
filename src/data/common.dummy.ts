@@ -4,27 +4,31 @@ export const headerNavDummy: HeaderNav[] = [
   {
     title: "Home",
     href: "/#",
-    // children: [
-    //   {
-    //     title: "Proposal",
-    //     href: "/",
-    //   },
-    // ],
+    children: [
+      {
+        title: "Most Picked",
+        href: "/#most-picked",
+      },
+      {
+        title: "Popular Choices",
+        href: "/#popular-choices",
+      },
+    ],
   },
   {
     title: "Hotels",
-    href: "/rules",
+    href: "/hotels",
   },
   {
     title: "Rooms",
-    href: "/#schedules",
+    href: "/rooms",
   },
   {
     title: "About",
-    href: "/#sponsors",
+    href: "/about",
   },
   {
     title: "Contact",
-    href: "/#sponsors",
+    href: "/contact",
   },
 ];

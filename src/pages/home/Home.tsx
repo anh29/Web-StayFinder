@@ -1,12 +1,9 @@
 import { Box } from "@chakra-ui/react";
-import HeroSection from "./components/HeroSection";
-import TopicSection from "./components/TopicSection";
-import OutStandingFeaturesSection from "./components/OutstadingFeaturesSection";
-import BenefitsSection from "./components/BenefitsSection";
-import SchedulesSection from "./components/SchedulesSection";
-import PrizeSection from "./components/PrizeSection";
-import SponsorsSection from "./components/SponsorsSection";
-import OrganizationsSection from "./components/OrganizationsSection";
+import HeroSection from "./components/HeroSection/HeroSection";
+import SearchSection from "./components/SearchSection/SearchSection";
+import MostPickedSection from "./components/PickedSection/MostPickedSection";
+import { hotels } from "../../data/hotels";
+import PopularChoiceSection from "./components/PopularChoicesSection/PopularChoicesSection";
 
 export interface HomeProps {}
 
@@ -14,13 +11,9 @@ export default function Home(props: HomeProps) {
   return (
     <Box w="100%" maxW="1300px" m="auto">
       <HeroSection />
-      <TopicSection />
-      <OutStandingFeaturesSection />
-      <BenefitsSection />
-      <SchedulesSection />
-      <PrizeSection />
-      <SponsorsSection />
-      <OrganizationsSection />
+      <SearchSection hotels={hotels} />
+      <MostPickedSection hotels={hotels} />
+      <PopularChoiceSection hotels={hotels} />
     </Box>
   );
 }

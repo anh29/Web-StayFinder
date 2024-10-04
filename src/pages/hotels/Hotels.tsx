@@ -1,11 +1,11 @@
 import { Box } from "@chakra-ui/react";
 
-export interface RulesProps {}
+export interface HotelsProps {}
 
-export default function Rules(props: RulesProps) {
+export default function Hotels(props: HotelsProps) {
   return (
     <Box w="100%" maxW="1300px">
-      The le cuoc thi
+      Hotels
     </Box>
   );
 }
