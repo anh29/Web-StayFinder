@@ -59,10 +59,8 @@ export const AppRouter = memo(function AppRouter({
       }) => <div>{children}</div>,
       exact,
     } = route;
-    const fullPath =
-      parentPath && parentPath !== "/" ? `${parentPath}${path}` : path;
-
-    // Handle redirect URLs
+    const fullPath = parentPath && parentPath !== "/" ? `${parentPath}${path}` : path;
+  
     if (route.redirect) {
       return renderRedirectRoute(route);
     }
@@ -94,7 +92,7 @@ export const AppRouter = memo(function AppRouter({
       />
     );
   };
-
+  
   const renderNotFoundRoute = () => {
     return (
       <Route

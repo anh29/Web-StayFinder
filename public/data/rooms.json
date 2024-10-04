@@ -1,0 +1,92 @@
+[
+  {
+    "roomId": "r101",
+    "hotelId": "h1001",
+    "type": "Deluxe Suite",
+    "price": 250,
+    "currency": "EUR",
+    "capacity": 3,
+    "amenities": ["WiFi", "Air Conditioning", "Minibar", "Balcony"]
+  },
+  {
+    "roomId": "r102",
+    "hotelId": "h1001",
+    "type": "Standard Room",
+    "price": 120,
+    "currency": "EUR",
+    "capacity": 2,
+    "amenities": ["WiFi", "Air Conditioning"]
+  },
+  {
+    "roomId": "r201",
+    "hotelId": "h1002",
+    "type": "Oceanfront Suite",
+    "price": 400,
+    "currency": "USD",
+    "capacity": 4,
+    "amenities": ["WiFi", "Beach Access", "Minibar", "Balcony"]
+  },
+  {
+    "roomId": "r202",
+    "hotelId": "h1002",
+    "type": "Garden View Room",
+    "price": 200,
+    "currency": "USD",
+    "capacity": 3,
+    "amenities": ["WiFi", "Air Conditioning", "Terrace"]
+  },
+  {
+    "roomId": "r301",
+    "hotelId": "h1003",
+    "type": "Mountain View Room",
+    "price": 300,
+    "currency": "CHF",
+    "capacity": 4,
+    "amenities": ["WiFi", "Air Conditioning", "Balcony", "Ski Access"]
+  },
+  {
+    "roomId": "r103",
+    "hotelId": "h1001",
+    "type": "Deluxe Suite",
+    "price": 250,
+    "currency": "EUR",
+    "capacity": 3,
+    "amenities": ["WiFi", "Air Conditioning", "Minibar", "Balcony"]
+  },
+  {
+    "roomId": "r104",
+    "hotelId": "h1001",
+    "type": "Standard Room",
+    "price": 120,
+    "currency": "EUR",
+    "capacity": 2,
+    "amenities": ["WiFi", "Air Conditioning"]
+  },
+  {
+    "roomId": "r203",
+    "hotelId": "h1002",
+    "type": "Oceanfront Suite",
+    "price": 400,
+    "currency": "USD",
+    "capacity": 4,
+    "amenities": ["WiFi", "Beach Access", "Minibar", "Balcony"]
+  },
+  {
+    "roomId": "r204",
+    "hotelId": "h1002",
+    "type": "Garden View Room",
+    "price": 200,
+    "currency": "USD",
+    "capacity": 3,
+    "amenities": ["WiFi", "Air Conditioning", "Terrace"]
+  },
+  {
+    "roomId": "r303",
+    "hotelId": "h1003",
+    "type": "Mountain View Room",
+    "price": 300,
+    "currency": "CHF",
+    "capacity": 4,
+    "amenities": ["WiFi", "Air Conditioning", "Balcony", "Ski Access"]
+  }
+]

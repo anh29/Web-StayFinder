@@ -7,11 +7,11 @@ import PopularChoiceSection from "./components/PopularChoicesSection/PopularChoi
 
 export interface HomeProps {}
 
-export default function Home(props: HomeProps) {
+export default function Home() {
   return (
     <Box w="100%" maxW="1300px" m="auto">
       <HeroSection />
-      <SearchSection hotels={hotels} />
+      <SearchSection />
       <MostPickedSection hotels={hotels} />
       <PopularChoiceSection hotels={hotels} />
     </Box>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Box, Button, Flex, Input, Select } from '@chakra-ui/react';
 import { FiCalendar, FiMapPin, FiUser } from 'react-icons/fi';
 import { PERSON_OPTIONS } from 'data/constants';
-import { Hotel } from 'types/hotels';
+import { useHistory } from 'react-router-dom';
 
 // Define the props for InputField
 interface InputFieldProps {
@@ -53,13 +53,13 @@ const SearchButton: React.FC<SearchButtonProps> = ({ onClick }) => (
 );
 
 // Define the main SearchSection component
-const SearchSection: React.FC<{ hotels: Hotel[] }> = ({ hotels }) => {
-  // Centralized state management for form data
+const SearchSection = () => {
   const [formData, setFormData] = useState({
     date: '',
     persons: '',
     location: '',
   });
+  const history = useHistory();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -68,22 +68,13 @@ const SearchSection: React.FC<{ hotels: Hotel[] }> = ({ hotels }) => {
 
   const handleSearch = () => {
     const { date, persons, location } = formData;
-
-    // Basic validation
     if (!date || !persons || !location) {
       alert('Please fill in all fields.');
       return;
     }
 
-    console.log('Searching with:', formData);
-
-    // Filter hotels based on location (can be expanded as needed)
-    const filteredHotels = hotels.filter(hotel => 
-      hotel.location.address.toLowerCase().includes(location.toLowerCase())
-    );
-
-    console.log('Filtered Hotels:', filteredHotels);
-    // Here you can add further functionality to display the filtered hotels
+    const query = `?date=${encodeURIComponent(date)}&persons=${encodeURIComponent(persons)}&location=${encodeURIComponent(location)}`;
+    history.push(`/search${query}`);
   };
 
   return (
