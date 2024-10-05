@@ -1,7 +1,6 @@
 export type Hotel = {
   hotelId: string;
   name: string;
-  description: string;
   location: {
     country: string;
     city: string;
@@ -9,11 +8,6 @@ export type Hotel = {
     latitude: number;
     longitude: number;
   };
-  rating: number;
-  totalReviews: number;
-  priceRange: { min: number; max: number };
-  currency: string;
-  amenities: string[];
   images: string[];
   facilities: string[];
 };
@@ -21,14 +15,11 @@ export type Hotel = {
 export type Room = {
   roomId: string;
   hotelId: string;
-  roomType: string;
-  pricePerNight: number;
+  type: string;
+  price: number;
   currency: string;
+  capacity: number;
   amenities: string[];
-  maxGuests: number;
-  bedType: string;
-  size: number; // in square meters
-  description: string;
   images: string[];
 };
 
@@ -37,12 +28,8 @@ export type User = {
   name: string;
   email: string;
   phone: string;
-  passwordHash: string;
-  profileImage: string;
-  gender: string;
-  dateOfBirth: string;
-  nationality: string;
-  bookingHistory: Booking[];
+  password: string;
+  bookings: Booking[];
 };
 
 export type Review = {
@@ -51,10 +38,11 @@ export type Review = {
   userId: string;
   rating: number; // e.g., between 1 and 5
   comment: string;
-  date: string; // ISO format
 };
 
-export type Amenities = string[];
+export type Amenities = {
+  amenities: string[]
+};
 
 export type Availability = {
   hotelId: string;

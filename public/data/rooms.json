@@ -6,7 +6,12 @@
     "price": 250,
     "currency": "EUR",
     "capacity": 3,
-    "amenities": ["WiFi", "Air Conditioning", "Minibar", "Balcony"]
+    "amenities": ["WiFi", "Air Conditioning", "Minibar", "Balcony"],
+    "date": "2024-10-01",
+    "images": [
+      "https://grandoceanhotel.com.vn/wp-content/uploads/2019/01/Hoboi-4.jpg",
+      "https://images.trvl-media.com/lodging/56000000/55320000/55315600/55315599/62bec2b8.jpg?impolicy=resizecrop&rw=575&rh=575&ra=fill"
+    ]
   },
   {
     "roomId": "r102",
@@ -15,7 +20,12 @@
     "price": 120,
     "currency": "EUR",
     "capacity": 2,
-    "amenities": ["WiFi", "Air Conditioning"]
+    "amenities": ["WiFi", "Air Conditioning"],
+    "date": "2024-10-01",
+    "images": [
+      "https://grandoceanhotel.com.vn/wp-content/uploads/2019/01/Hoboi-4.jpg",
+      "https://images.trvl-media.com/lodging/56000000/55320000/55315600/55315599/62bec2b8.jpg?impolicy=resizecrop&rw=575&rh=575&ra=fill"
+    ]
   },
   {
     "roomId": "r201",
@@ -24,7 +34,12 @@
     "price": 400,
     "currency": "USD",
     "capacity": 4,
-    "amenities": ["WiFi", "Beach Access", "Minibar", "Balcony"]
+    "amenities": ["WiFi", "Beach Access", "Minibar", "Balcony"],
+    "date": "2024-10-01",
+    "images": [
+      "https://grandoceanhotel.com.vn/wp-content/uploads/2019/01/Hoboi-4.jpg",
+      "https://images.trvl-media.com/lodging/56000000/55320000/55315600/55315599/62bec2b8.jpg?impolicy=resizecrop&rw=575&rh=575&ra=fill"
+    ]
   },
   {
     "roomId": "r202",
@@ -33,7 +48,12 @@
     "price": 200,
     "currency": "USD",
     "capacity": 3,
-    "amenities": ["WiFi", "Air Conditioning", "Terrace"]
+    "amenities": ["WiFi", "Air Conditioning", "Terrace"],
+    "date": "2024-10-01",
+    "images": [
+      "https://grandoceanhotel.com.vn/wp-content/uploads/2019/01/Hoboi-4.jpg",
+      "https://images.trvl-media.com/lodging/56000000/55320000/55315600/55315599/62bec2b8.jpg?impolicy=resizecrop&rw=575&rh=575&ra=fill"
+    ]
   },
   {
     "roomId": "r301",
@@ -42,7 +62,12 @@
     "price": 300,
     "currency": "CHF",
     "capacity": 4,
-    "amenities": ["WiFi", "Air Conditioning", "Balcony", "Ski Access"]
+    "amenities": ["WiFi", "Air Conditioning", "Balcony", "Ski Access"],
+    "date": "2024-10-01",
+    "images": [
+      "https://grandoceanhotel.com.vn/wp-content/uploads/2019/01/Hoboi-4.jpg",
+      "https://images.trvl-media.com/lodging/56000000/55320000/55315600/55315599/62bec2b8.jpg?impolicy=resizecrop&rw=575&rh=575&ra=fill"
+    ]
   },
   {
     "roomId": "r103",
@@ -51,7 +76,12 @@
     "price": 250,
     "currency": "EUR",
     "capacity": 3,
-    "amenities": ["WiFi", "Air Conditioning", "Minibar", "Balcony"]
+    "amenities": ["WiFi", "Air Conditioning", "Minibar", "Balcony"],
+    "date": "2024-10-01",
+    "images": [
+      "https://grandoceanhotel.com.vn/wp-content/uploads/2019/01/Hoboi-4.jpg",
+      "https://images.trvl-media.com/lodging/56000000/55320000/55315600/55315599/62bec2b8.jpg?impolicy=resizecrop&rw=575&rh=575&ra=fill"
+    ]
   },
   {
     "roomId": "r104",
@@ -60,7 +90,12 @@
     "price": 120,
     "currency": "EUR",
     "capacity": 2,
-    "amenities": ["WiFi", "Air Conditioning"]
+    "amenities": ["WiFi", "Air Conditioning"],
+    "date": "2024-10-01",
+    "images": [
+      "https://grandoceanhotel.com.vn/wp-content/uploads/2019/01/Hoboi-4.jpg",
+      "https://images.trvl-media.com/lodging/56000000/55320000/55315600/55315599/62bec2b8.jpg?impolicy=resizecrop&rw=575&rh=575&ra=fill"
+    ]
   },
   {
     "roomId": "r203",
@@ -69,7 +104,12 @@
     "price": 400,
     "currency": "USD",
     "capacity": 4,
-    "amenities": ["WiFi", "Beach Access", "Minibar", "Balcony"]
+    "amenities": ["WiFi", "Beach Access", "Minibar", "Balcony"],
+    "date": "2024-10-01",
+    "images": [
+      "https://grandoceanhotel.com.vn/wp-content/uploads/2019/01/Hoboi-4.jpg",
+      "https://images.trvl-media.com/lodging/56000000/55320000/55315600/55315599/62bec2b8.jpg?impolicy=resizecrop&rw=575&rh=575&ra=fill"
+    ]
   },
   {
     "roomId": "r204",
@@ -78,7 +118,12 @@
     "price": 200,
     "currency": "USD",
     "capacity": 3,
-    "amenities": ["WiFi", "Air Conditioning", "Terrace"]
+    "amenities": ["WiFi", "Air Conditioning", "Terrace"],
+    "date": "2024-10-01",
+    "images": [
+      "https://grandoceanhotel.com.vn/wp-content/uploads/2019/01/Hoboi-4.jpg",
+      "https://images.trvl-media.com/lodging/56000000/55320000/55315600/55315599/62bec2b8.jpg?impolicy=resizecrop&rw=575&rh=575&ra=fill"
+    ]
   },
   {
     "roomId": "r303",
@@ -87,6 +132,11 @@
     "price": 300,
     "currency": "CHF",
     "capacity": 4,
-    "amenities": ["WiFi", "Air Conditioning", "Balcony", "Ski Access"]
+    "amenities": ["WiFi", "Air Conditioning", "Balcony", "Ski Access"],
+    "date": "2024-10-01",
+    "images": [
+      "https://grandoceanhotel.com.vn/wp-content/uploads/2019/01/Hoboi-4.jpg",
+      "https://images.trvl-media.com/lodging/56000000/55320000/55315600/55315599/62bec2b8.jpg?impolicy=resizecrop&rw=575&rh=575&ra=fill"
+    ]
   }
 ]

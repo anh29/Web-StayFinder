@@ -1,4 +1,3 @@
-import { SearchFilters } from "types/config/filter";
 import {
   Hotel,
   Room,
@@ -38,7 +37,7 @@ export const fetchUsers = async (): Promise<User[]> => {
 };
 
 export const fetchReviews = async (): Promise<Review[]> => {
-  return fetchData<Review[]>("/data/reviews.json");
+  return fetchData<Review[]>("/data/review.json");
 };
 
 export const fetchAmenities = async (): Promise<Amenities> => {
@@ -65,23 +64,26 @@ export const fetchCancellationPolicies = async (): Promise<Policy[]> => {
   return fetchData<Policy[]>("/data/policy.json");
 };
 
-export const fetchHotelsByFilters = async (filters: SearchFilters): Promise<Hotel[]> => {
+export const getAllCities = async (): Promise<string[]> => {
   const hotels = await fetchHotels();
+  const cities = hotels.map((hotel) => hotel.location.city);
 
-  if (filters.location) {
-    return hotels.filter((hotel) =>
-      hotel.location.city.toLowerCase().includes(filters.location.toLowerCase())
-    );
-  }
-
-  return hotels;
+  return Array.from(new Set(cities));
 };
 
-// Function to get all unique cities from hotels data
-export const getAllCities = async (): Promise<string[]> => {
-  const hotels = await fetchHotels(); // Fetch all hotels
-  const cities = hotels.map(hotel => hotel.location.city); // Extract all cities
+export const fetchHotelById = async (
+  hotelId: string
+): Promise<Hotel | null> => {
+  const hotels = await fetchHotels();
+  return hotels.find((hotel) => hotel.hotelId === hotelId) || null;
+};
 
-  // Return unique cities by creating a Set and converting it back to an array
-  return Array.from(new Set(cities));
+export const fetchRoomById = async (roomId: string): Promise<Room | null> => {
+  const rooms = await fetchRooms();
+  return rooms.find((room) => room.roomId === roomId) || null;
+};
+
+export const fetchRoomsByHotelId = async (hotelId: string): Promise<Room[]> => {
+  const rooms = await fetchRooms();
+  return rooms.filter((room) => room.hotelId === hotelId);
 };

@@ -1,8 +1,19 @@
-import { Box, Input, Button, Select, Stack, Text, useBreakpointValue, useToast } from '@chakra-ui/react';
-import { SearchIcon } from '@chakra-ui/icons';
-import { useEffect, useState } from 'react';
-import { fetchHotelsByFilters, getAllCities } from 'api/api';
-import { useHistory } from 'react-router-dom';
+import {
+  Box,
+  Input,
+  Button,
+  Select,
+  Stack,
+  Text,
+  useBreakpointValue,
+  useToast,
+  HStack,
+} from "@chakra-ui/react";
+import { SearchIcon } from "@chakra-ui/icons";
+import { useEffect, useState } from "react";
+import { getAllCities } from "api/api";
+import { useHistory } from "react-router-dom";
+import { PERSON_OPTIONS } from "data/constants";
 
 interface SearchModalProps {
   onClose: () => void;
@@ -11,10 +22,14 @@ interface SearchModalProps {
 const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
   const [cities, setCities] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [location, setLocation] = useState('');
-  const [checkInDate, setCheckInDate] = useState('');
+  const [location, setLocation] = useState("");
+  const [checkInDate, setCheckInDate] = useState("");
+  const [checkOutDate, setCheckOutDate] = useState("");
+  const [persons, setPersons] = useState<number>(1);
+  const [minPrice, setMinPrice] = useState<number>(0);
+  const [maxPrice, setMaxPrice] = useState<number>(1000);
   const toast = useToast();
-  const size = useBreakpointValue({ base: 'md', md: 'lg' });
+  const size = useBreakpointValue({ base: "md", md: "lg" });
   const history = useHistory();
 
   useEffect(() => {
@@ -33,10 +48,10 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
   }, []);
 
   const handleSearch = async () => {
-    if (!location || !checkInDate) {
+    if (!location || !checkInDate || !checkOutDate) {
       toast({
         title: "Missing Information",
-        description: "Please select a location and check-in date.",
+        description: "Please fill in all fields.",
         status: "warning",
         duration: 3000,
         isClosable: true,
@@ -45,9 +60,17 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
     }
 
     try {
-      const query = `?date=${encodeURIComponent(checkInDate)}&persons=${encodeURIComponent('2')}&location=${encodeURIComponent(location)}`;
+      const query = `?location=${encodeURIComponent(
+        location
+      )}&checkIn=${encodeURIComponent(
+        checkInDate
+      )}&checkOut=${encodeURIComponent(
+        checkOutDate
+      )}&persons=${encodeURIComponent(persons)}&minPrice=${encodeURIComponent(
+        minPrice
+      )}&maxPrice=${encodeURIComponent(maxPrice)}`;
       history.push(`/search${query}`);
-      onClose(); // Close the modal after a successful search
+      onClose();
     } catch (error) {
       toast({
         title: "Search Failed",
@@ -68,27 +91,21 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
       bg="white"
       border="2px solid teal"
       transition="all 0.3s"
-      _hover={{ boxShadow: 'xl', transform: 'translateY(-2px)' }}
+      _hover={{ boxShadow: "xl", transform: "translateY(-2px)" }}
     >
-      <Text fontSize="3xl" fontWeight="bold" color="teal.600" textAlign="center" mb={6}>
+      <Text
+        fontSize="3xl"
+        fontWeight="bold"
+        color="teal.600"
+        textAlign="center"
+        mb={6}
+      >
         Find Your Perfect Stay
       </Text>
       <Stack spacing={4}>
-        <Input
-          placeholder="Where are you going?"
-          size={size}
-          variant="outline"
-          bg="white"
-          borderColor="teal.300"
-          borderRadius="md"
-          _placeholder={{ color: 'gray.500' }}
-          _focus={{ borderColor: 'teal.500', boxShadow: '0 0 0 1px teal.500' }}
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-        />
-        <Stack direction={{ base: 'column', md: 'row' }} spacing={4}>
+        <Stack direction={{ base: "column", md: "row" }} spacing={4}>
           <Select
-            placeholder="Select Location"
+            placeholder="Location"
             size={size}
             variant="outline"
             bg="white"
@@ -101,12 +118,14 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
               <option>Loading cities...</option>
             ) : (
               cities.map((city) => (
-                <option key={city} value={city.toLowerCase()}>{city}</option>
+                <option key={city} value={city.toLowerCase()}>
+                  {city}
+                </option>
               ))
             )}
           </Select>
           <Select
-            placeholder="Check-in Date"
+            placeholder="Check-in"
             size={size}
             variant="outline"
             bg="white"
@@ -118,12 +137,69 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
             <option value="today">Today</option>
             <option value="tomorrow">Tomorrow</option>
           </Select>
+          <Select
+            placeholder="Check-out"
+            size={size}
+            variant="outline"
+            bg="white"
+            borderColor="teal.300"
+            borderRadius="md"
+            value={checkOutDate}
+            onChange={(e) => setCheckOutDate(e.target.value)}
+          >
+            <option value="1day">1 Day</option>
+            <option value="2days">2 Days</option>
+          </Select>
         </Stack>
+        <HStack spacing={4}>
+          <Select
+            placeholder="Number of Persons"
+            size={size}
+            variant="outline"
+            bg="white"
+            borderColor="teal.300"
+            borderRadius="md"
+            value={persons}
+            onChange={(e) => setPersons(Number(e.target.value))}
+          >
+            {PERSON_OPTIONS.map((num) => (
+              <option key={num} value={num}>
+                {`Person: ${num}`}
+              </option>
+            ))}
+          </Select>
+          <Input
+            placeholder="Min Price"
+            size={size}
+            variant="outline"
+            bg="white"
+            borderColor="teal.300"
+            borderRadius="md"
+            type="number"
+            value={minPrice}
+            onChange={(e) => setMinPrice(Number(e.target.value))}
+          />
+          <Input
+            placeholder="Max Price"
+            size={size}
+            variant="outline"
+            bg="white"
+            borderColor="teal.300"
+            borderRadius="md"
+            type="number"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(Number(e.target.value))}
+          />
+        </HStack>
         <Button
           colorScheme="teal"
           size={size}
           borderRadius="md"
-          _hover={{ bg: 'blue.500', transform: 'translateY(-2px)', boxShadow: 'lg' }}
+          _hover={{
+            bg: "blue.500",
+            transform: "translateY(-2px)",
+            boxShadow: "lg",
+          }}
           transition="all 0.3s"
           onClick={handleSearch}
         >

@@ -1,8 +1,8 @@
 import { SimpleGrid, Box, Image, Text, Badge, HStack, keyframes } from "@chakra-ui/react";
-import { Hotel } from "types/data"; 
+import { EnhancedHotel } from "types/enhancedData"; 
 import { useHistory } from "react-router-dom";
 
-const HotelGrid = ({ hotels }: { hotels: Hotel[] }) => {
+const HotelGrid = ({ hotels }: { hotels: EnhancedHotel[] }) => {
   const history = useHistory();
 
   const hoverEffect = keyframes`
@@ -22,7 +22,7 @@ const HotelGrid = ({ hotels }: { hotels: Hotel[] }) => {
           key={hotel.hotelId}
           borderRadius="lg"
           overflow="hidden"
-          boxShadow="md"
+          boxShadow="lg"
           transition="transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out"
           _hover={{
             boxShadow: '2xl',
@@ -46,13 +46,25 @@ const HotelGrid = ({ hotels }: { hotels: Hotel[] }) => {
             _hover={{ filter: "brightness(1)" }}
           />
           <Box p={4} textAlign="center">
-            <Text fontWeight="bold" fontSize="lg" color="teal.800" textShadow="0 1px 3px rgba(0, 0, 0, 0.5)">
+            <Text fontWeight="bold" fontSize="lg" color="teal.800" textShadow="0 1px 1px rgba(0, 0, 0, 0.5)">
               {hotel.name}
             </Text>
             <Text fontSize="sm" color="gray.600" mb={2} noOfLines={2}>
               {hotel.location.address}, {hotel.location.city}, {hotel.location.country}
             </Text>
-            <HStack mt={2} spacing={1} wrap="wrap" justify="center">
+            <Text fontSize="md" color="teal.600" fontWeight="semibold" mt={2}>
+              ${hotel.priceRange.min} - ${hotel.priceRange.max} per night
+            </Text>
+            <Text fontSize="sm" color="gray.500" mt={1}>
+              Rating: {hotel.rating.toFixed(1)} ⭐
+            </Text>
+            <Text fontSize="sm" color="gray.500" mt={1}>
+              Check-in: {hotel.checkInTime} | Check-out: {hotel.checkOutTime}
+            </Text>
+            <Text fontSize="sm" color="gray.500" mt={1}>
+              Cancellation: {hotel.cancellationPolicy}
+            </Text>
+            <HStack mt={2} spacing={1} wrap="wrap" justify="center" gap={'10px'}>
               {hotel.facilities.slice(0, 4).map((facility, index) => (
                 <Badge key={index} colorScheme="teal" borderRadius="full" px={2} py={1} fontSize={{ base: "sm", md: "md" }}>
                   {facility}

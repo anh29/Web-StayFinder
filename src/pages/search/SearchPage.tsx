@@ -4,32 +4,27 @@ import {
   Spinner,
   Alert,
   AlertIcon,
-  Heading
-} from '@chakra-ui/react';
-import { fetchHotelsByFilters } from 'api/api';
-import HotelGrid from 'pages/hotels/components/HotelGrid';
-import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Hotel } from 'types/data';
+  Heading,
+} from "@chakra-ui/react";
+import { fetchEnhancedHotelsByFilters } from "api/fetchData";
+import HotelGrid from "pages/hotels/components/HotelGrid";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { SearchFilters } from "types/config/filter";
+import { EnhancedHotel } from "types/enhancedData";
+import { constructFiltersFromQuery } from "utils/search-filter";
 
 const SearchPage = () => {
   const location = useLocation();
-  const [hotels, setHotels] = useState<Hotel[]>([]);
+  const [hotels, setHotels] = useState<EnhancedHotel[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const filters = {
-      date: queryParams.get('date') || '',
-      persons: queryParams.get('persons') || '',
-      location: queryParams.get('location') || '',
-    };
-
-    const fetchHotelsData = async () => {
+    const fetchHotelsData = async (filters: SearchFilters) => {
       try {
         setLoading(true);
-        const data = await fetchHotelsByFilters(filters);
+        const data = await fetchEnhancedHotelsByFilters(filters);
         setHotels(data);
       } catch (err) {
         setError("Error fetching hotels. Please try again later.");
@@ -38,7 +33,10 @@ const SearchPage = () => {
       }
     };
 
-    fetchHotelsData();
+    const queryParams = new URLSearchParams(location.search);
+    const filters = constructFiltersFromQuery(queryParams);
+
+    fetchHotelsData(filters);
   }, [location.search]);
 
   if (loading) {
@@ -60,7 +58,6 @@ const SearchPage = () => {
 
   return (
     <Box minH="100vh" bg="gray.50">
-      {/* Results Section */}
       <Box p={6}>
         <Heading as="h2" size="lg" mb={6} textAlign="center" color="teal.600">
           Search Results
