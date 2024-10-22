@@ -59,7 +59,9 @@
     "prettier": "prettier src -check",
     "lint-staged": "lint-staged --config lint-staged.js",
     "husky-install": "husky install",
-    "prepare": "cd .. && husky install landing-page/.husky"
+    "prepare": "cd .. && husky install landing-page/.husky",
+    "predeploy" : "npm run build",
+    "deploy" : "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
