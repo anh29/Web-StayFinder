@@ -1,53 +1,34 @@
-import {
-  Box,
-  Input,
-  Button,
-  Select,
-  Stack,
-  Text,
-  useBreakpointValue,
-  useToast,
-  HStack,
-} from "@chakra-ui/react";
+import { Box, Button, Select, Stack, Text, useBreakpointValue, useToast, HStack, Spinner, Tooltip } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
-import { useEffect, useState } from "react";
-import { getAllCities } from "api/api";
+import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { PERSON_OPTIONS } from "data/constants";
+import SearchLocation from "components/elements/SearchLocation";
+import DateSelection from "components/layouts/DateSection";
 
 interface SearchModalProps {
   onClose: () => void;
 }
 
 const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
-  const [cities, setCities] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [location, setLocation] = useState("");
-  const [checkInDate, setCheckInDate] = useState("");
-  const [checkOutDate, setCheckOutDate] = useState("");
-  const [persons, setPersons] = useState<number>(1);
-  const [minPrice, setMinPrice] = useState<number>(0);
-  const [maxPrice, setMaxPrice] = useState<number>(1000);
+  const [loading, setLoading] = useState(false);
+  const [searchParams, setSearchParams] = useState({
+    location: "",
+    checkInDate: null as Date | null,
+    checkOutDate: null as Date | null,
+    persons: 1,
+  });
   const toast = useToast();
   const size = useBreakpointValue({ base: "md", md: "lg" });
   const history = useHistory();
 
-  useEffect(() => {
-    const fetchCities = async () => {
-      try {
-        const cityList = await getAllCities();
-        setCities(cityList);
-      } catch (error) {
-        console.error("Error fetching cities:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const formatDate = (date: Date | null): string => {
+    return date ? date.toISOString().slice(0, 10) : "";
+  };
 
-    fetchCities();
-  }, []);
+  const handleSearch = () => {
+    const { location, checkInDate, checkOutDate, persons } = searchParams;
 
-  const handleSearch = async () => {
     if (!location || !checkInDate || !checkOutDate) {
       toast({
         title: "Missing Information",
@@ -59,27 +40,20 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
       return;
     }
 
-    try {
-      const query = `?location=${encodeURIComponent(
-        location
-      )}&checkIn=${encodeURIComponent(
-        checkInDate
-      )}&checkOut=${encodeURIComponent(
-        checkOutDate
-      )}&persons=${encodeURIComponent(persons)}&minPrice=${encodeURIComponent(
-        minPrice
-      )}&maxPrice=${encodeURIComponent(maxPrice)}`;
-      history.push(`/search${query}`);
-      onClose();
-    } catch (error) {
-      toast({
-        title: "Search Failed",
-        description: "There was an error fetching the search results.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
+    const query = `?location=${encodeURIComponent(location)}&checkIn=${formatDate(checkInDate)}&checkOut=${formatDate(checkOutDate)}&persons=${persons}`;
+    history.push(`/search${query}`);
+    onClose();
+    toast({
+      title: "Search Initiated",
+      description: "Your search has been started.",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
+  const handleLocationSelect = (name: string) => {
+    setSearchParams((prev) => ({ ...prev, location: name }));
   };
 
   return (
@@ -93,120 +67,82 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
       transition="all 0.3s"
       _hover={{ boxShadow: "xl", transform: "translateY(-2px)" }}
     >
-      <Text
-        fontSize="3xl"
-        fontWeight="bold"
-        color="teal.600"
-        textAlign="center"
-        mb={6}
-      >
+      <Text fontSize="3xl" fontWeight="bold" color="teal.600" textAlign="center" mb={6}>
         Find Your Perfect Stay
       </Text>
-      <Stack spacing={4}>
-        <Stack direction={{ base: "column", md: "row" }} spacing={4}>
-          <Select
-            placeholder="Location"
-            size={size}
-            variant="outline"
-            bg="white"
-            borderColor="teal.300"
-            borderRadius="md"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-          >
-            {loading ? (
-              <option>Loading cities...</option>
-            ) : (
-              cities.map((city) => (
-                <option key={city} value={city.toLowerCase()}>
-                  {city}
-                </option>
-              ))
-            )}
-          </Select>
-          <Select
-            placeholder="Check-in"
-            size={size}
-            variant="outline"
-            bg="white"
-            borderColor="teal.300"
-            borderRadius="md"
-            value={checkInDate}
-            onChange={(e) => setCheckInDate(e.target.value)}
-          >
-            <option value="today">Today</option>
-            <option value="tomorrow">Tomorrow</option>
-          </Select>
-          <Select
-            placeholder="Check-out"
-            size={size}
-            variant="outline"
-            bg="white"
-            borderColor="teal.300"
-            borderRadius="md"
-            value={checkOutDate}
-            onChange={(e) => setCheckOutDate(e.target.value)}
-          >
-            <option value="1day">1 Day</option>
-            <option value="2days">2 Days</option>
-          </Select>
-        </Stack>
-        <HStack spacing={4}>
-          <Select
-            placeholder="Number of Persons"
-            size={size}
-            variant="outline"
-            bg="white"
-            borderColor="teal.300"
-            borderRadius="md"
-            value={persons}
-            onChange={(e) => setPersons(Number(e.target.value))}
-          >
-            {PERSON_OPTIONS.map((num) => (
-              <option key={num} value={num}>
-                {`Person: ${num}`}
-              </option>
-            ))}
-          </Select>
-          <Input
-            placeholder="Min Price"
-            size={size}
-            variant="outline"
-            bg="white"
-            borderColor="teal.300"
-            borderRadius="md"
-            type="number"
-            value={minPrice}
-            onChange={(e) => setMinPrice(Number(e.target.value))}
-          />
-          <Input
-            placeholder="Max Price"
-            size={size}
-            variant="outline"
-            bg="white"
-            borderColor="teal.300"
-            borderRadius="md"
-            type="number"
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(Number(e.target.value))}
-          />
+      {loading ? (
+        <HStack spacing={2} justify="center">
+          <Spinner size="lg" color="teal.500" />
+          <Text>Loading locations...</Text>
         </HStack>
-        <Button
-          colorScheme="teal"
-          size={size}
-          borderRadius="md"
-          _hover={{
-            bg: "blue.500",
-            transform: "translateY(-2px)",
-            boxShadow: "lg",
-          }}
-          transition="all 0.3s"
-          onClick={handleSearch}
-        >
-          <SearchIcon mr={2} />
-          Search
-        </Button>
-      </Stack>
+      ) : (
+        <Stack spacing={4}>
+          <Text fontSize="xl" fontWeight="semibold">Location</Text>
+          <SearchLocation onLocationSelect={({ name }) => handleLocationSelect(name)} />
+
+          <Text fontSize="xl" fontWeight="semibold">Dates</Text>
+          <DateSelection
+            checkInDate={searchParams.checkInDate}
+            setCheckInDate={(date) => setSearchParams((prev) => ({ ...prev, checkInDate: date }))}
+            checkOutDate={searchParams.checkOutDate}
+            setCheckOutDate={(date) => setSearchParams((prev) => ({ ...prev, checkOutDate: date }))}
+          />
+
+          <Text fontSize="xl" fontWeight="semibold">Number of Persons</Text>
+          <HStack spacing={4}>
+            <Tooltip label="Select number of persons" aria-label="Select number of persons tooltip">
+              <Select
+                placeholder="Number of Persons"
+                size={size}
+                variant="outline"
+                bg="white"
+                borderColor="teal.300"
+                borderRadius="md"
+                value={searchParams.persons}
+                onChange={(e) => setSearchParams((prev) => ({ ...prev, persons: Number(e.target.value) }))}
+              >
+                {PERSON_OPTIONS.map((num) => (
+                  <option key={num} value={num}>
+                    {`Person: ${num}`}
+                  </option>
+                ))}
+              </Select>
+            </Tooltip>
+          </HStack>
+
+          <HStack spacing={4}>
+            <Button
+              colorScheme="teal"
+              size={size}
+              borderRadius="md"
+              _hover={{
+                bg: "blue.500",
+                transform: "translateY(-2px)",
+                boxShadow: "lg",
+              }}
+              transition="all 0.3s"
+              onClick={handleSearch}
+            >
+              <SearchIcon mr={2} />
+              Search
+            </Button>
+            <Button
+              size={size}
+              variant="outline"
+              onClick={() => {
+                setSearchParams({
+                  location: "",
+                  checkInDate: null,
+                  checkOutDate: null,
+                  persons: 1,
+                });
+              }}
+            >
+              Clear
+            </Button>
+          </HStack>
+        </Stack>
+      )}
     </Box>
   );
 };

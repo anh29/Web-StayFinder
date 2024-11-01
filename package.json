@@ -8,6 +8,8 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@fontsource/poppins": "^4.5.10",
+    "@mapbox/mapbox-gl-geocoder": "^5.0.3",
+    "@mapbox/mapbox-sdk": "^0.16.1",
     "@reduxjs/toolkit": "^1.9.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
@@ -31,9 +33,11 @@
     "husky": "8",
     "lint-staged": "^13.0.4",
     "lodash": "^4.17.21",
+    "mapbox-gl": "^3.7.0",
     "moment-timezone": "^0.5.40",
     "react": "^18.2.0",
     "react-countdown-circle-timer": "^3.2.1",
+    "react-datepicker": "^7.5.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
     "react-error-boundary": "^4.0.13",
@@ -82,6 +86,7 @@
     ]
   },
   "devDependencies": {
+    "@types/mapbox__mapbox-gl-geocoder": "^5.0.0",
     "@types/sass": "^1.43.1",
     "@types/sass-loader": "^8.0.3",
     "@types/webpack": "^5.28.0",

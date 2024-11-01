@@ -1,5 +1,7 @@
 import { BasicRoute } from "components/elements/AppRouter";
 import Layout from "components/layouts/Layout";
+import AboutPage from "pages/about/About";
+import ContactPage from "pages/contact/Contact";
 import Home from "pages/home/Home";
 import HotelDetailPage from "pages/hotels/components/HotelDetail";
 import Hotels from "pages/hotels/Hotels";
@@ -37,6 +39,18 @@ export const routes: BasicRoute[] = [
         path: "/room",
         label: "Detail Room",
         component: RoomDetailPage,
+        exact: true,
+      },
+      {
+        path: "/about",
+        label: "About Us",
+        component: AboutPage,
+        exact: true,
+      },
+      {
+        path: "/contact",
+        label: "Contact Us",
+        component: ContactPage,
         exact: true,
       },
     ],
