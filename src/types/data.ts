@@ -66,8 +66,6 @@ export type Booking = {
   status: 'confirmed' | 'pending' | 'cancelled';
 };
 
-export type PaymentMethod = 'Credit Card' | 'Debit Card' | 'PayPal' | 'Bank Transfer' | 'Apple Pay' | 'Google Pay';
-
 export type Promotion = {
   promotionId: string;
   hotelId: string;

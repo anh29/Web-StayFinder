@@ -2,7 +2,7 @@ import { Box, Text, Flex, Grid, keyframes, Image, Button } from "@chakra-ui/reac
 import { fetchEnhancedHotels } from "api/fetchData";
 import { useEffect, useState } from "react";
 import { EnhancedHotel } from "types/enhancedData";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 const bounce = keyframes`
   0%, 100% { transform: translateY(0); }
@@ -63,7 +63,7 @@ export default function Hotels(props: HotelsProps) {
           animation={`${bounce} 1s infinite`}
           _hover={{ bg: "teal.600" }}
         >
-          Find Your Stay
+          <Link to='/rooms'>Find Your Stay</Link>
         </Button>
       </Flex>
 

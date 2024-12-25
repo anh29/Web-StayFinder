@@ -1,29 +1,25 @@
 import React, { useEffect, useState } from "react";
 import {
-  Button,
   Container,
+  Spinner,
+  Text,
+  Box,
+  Button,
+  VStack,
   Heading,
   Image,
-  Text,
-  VStack,
   useToast,
-  Spinner,
-  Box,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
 } from "@chakra-ui/react";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
+import { Booking } from "types/data"; // Ensure correct types are imported
 import { fetchRoomById } from "api/api";
+import BookingModal from "components/booking/BookingModal";
 
 const RoomDetailPage = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const roomId = queryParams.get("id");
-
+  const history = useHistory();
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -37,7 +33,8 @@ const RoomDetailPage = () => {
         const fetchedRoom = await fetchRoomById(roomId);
         setRoom(fetchedRoom);
       } catch (error) {
-        setError("Failed to fetch room details.");
+        console.error("Error fetching room details:", error);
+        setError("Failed to fetch room details. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -50,15 +47,26 @@ const RoomDetailPage = () => {
     setIsModalOpen(true);
   };
 
-  const confirmBooking = () => {
-    toast({
-      title: "Booking Successful!",
-      description: `You have booked the ${room.type} for €${room.price} per night.`,
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
-    setIsModalOpen(false);
+  const confirmBooking = async (booking: Booking) => {
+    try {
+      // Simulate booking logic here, e.g., API call
+      toast({
+        title: "Booking Successful!",
+        description: `You have booked the ${room.type} for €${room.price} per night.`,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      // Additional logic for confirmed booking
+    } catch (error) {
+      toast({
+        title: "Booking Failed",
+        description: "There was an error processing your booking.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   const nextImage = () => {
@@ -70,7 +78,9 @@ const RoomDetailPage = () => {
       prevIndex === 0 ? room.images.length - 1 : prevIndex - 1
     );
   };
-
+  const handleRedirect = () => {
+    history.push("/history");
+  };
   if (loading) {
     return (
       <Container centerContent>
@@ -106,8 +116,9 @@ const RoomDetailPage = () => {
             colorScheme="teal"
             onClick={prevImage}
             transform="translateY(-50%)"
+            isDisabled={room.images.length <= 1}
           >
-            Prev
+            &lt;
           </Button>
           <Button
             position="absolute"
@@ -116,8 +127,9 @@ const RoomDetailPage = () => {
             colorScheme="teal"
             onClick={nextImage}
             transform="translateY(-50%)"
+            isDisabled={room.images.length <= 1}
           >
-            Next
+            &gt;
           </Button>
         </Box>
         <Text fontSize="xl" color="gray.600">
@@ -134,23 +146,14 @@ const RoomDetailPage = () => {
         </Button>
       </VStack>
 
-      {/* Booking Confirmation Modal */}
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Confirm Your Booking</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text>Do you want to book the {room.type} for €{room.price} per night?</Text>
-          </ModalBody>
-          <Button colorScheme="teal" onClick={confirmBooking} m={4}>
-            Confirm
-          </Button>
-          <Button onClick={() => setIsModalOpen(false)} m={4}>
-            Cancel
-          </Button>
-        </ModalContent>
-      </Modal>
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        room={{ type: room.type, price: room.price, currency: "€" }}
+        onConfirm={confirmBooking}
+        onRedirect={handleRedirect}
+      />
     </Container>
   );
 };

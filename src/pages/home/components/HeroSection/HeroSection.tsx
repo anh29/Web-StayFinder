@@ -3,6 +3,7 @@ import ElementEffectEntering from "components/shared/effect/ElementEffectEnterin
 import { banner } from "assets/images";
 import StatBox from "components/elements/StatBox";
 import { STATISTICS } from "./data";
+import { Link } from "react-router-dom";
 
 export interface HeroSectionProps {}
 
@@ -82,7 +83,7 @@ export default function HeroSection(props: HeroSectionProps) {
               textAlign={"center"}
               alignSelf={{ base: "center", md: "flex-start" }}
             >
-              Show More
+              <Link to='/hotels'>Show More</Link>
             </Button>
           </ElementEffectEntering>
         </Box>

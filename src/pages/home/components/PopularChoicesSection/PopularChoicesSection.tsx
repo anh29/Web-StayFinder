@@ -1,10 +1,30 @@
 import { Box, Flex, Heading, Button } from '@chakra-ui/react';
+import { fetchEnhancedHotels } from 'api/fetchData';
 import HotelCard from 'components/layouts/HotelCard';
 import { useCarousel } from 'hooks/useCarousel';
+import { useState, useEffect } from 'react';
+import { EnhancedHotel } from 'types/enhancedData';
 import { Hotel } from 'types/hotels';
 import { getTopHotels } from 'utils/getTopHotels';
 
-const PopularChoiceSection = ({ hotels }: { hotels: Hotel[] }) => {
+const PopularChoiceSection = () => {
+  const [hotels, setHotels] = useState<EnhancedHotel[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  
+  useEffect(() => {
+    const loadHotels = async () => {
+      try {
+        const fetchedHotels = await fetchEnhancedHotels();
+        setHotels(fetchedHotels);
+      } catch (error) {
+        console.error("Failed to fetch hotels:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadHotels();
+  }, []);
   const topHotels = getTopHotels({ hotels, top: 8 });
   const { currentIndex, next, prev } = useCarousel(0, 1); // 1 item per page for carousel
 
@@ -40,16 +60,16 @@ const PopularChoiceSection = ({ hotels }: { hotels: Hotel[] }) => {
           >
             {topHotels.map((hotel) => (
               <Box
-                key={hotel.id}
+                key={hotel.hotelId}
                 mx={2} // Space between cards
                 width={`${cardWidth}px`} // Fixed width for each card
                 flexShrink={0} // Prevent cards from shrinking
               >
                 <HotelCard
-                  imageUrl={hotel.imageUrl}
+                  imageUrl={hotel.images[0]}
                   name={hotel.name}
                   location={hotel.location.address}
-                  pricePerNight={hotel.pricePerNight.toString()}
+                  pricePerNight={`${hotel.priceRange.min}-${hotel.priceRange.max}`}
                   starRating={hotel.rating}
                   isFullWidth={true}
                 />
@@ -81,17 +101,17 @@ const PopularChoiceSection = ({ hotels }: { hotels: Hotel[] }) => {
       >
         {topHotels.map((hotel) => (
           <Box
-            key={hotel.id}
+            key={hotel.hotelId}
             m={2}
             width={hotelCount < 3 ? "30%" : `${cardWidth}px`} // Adjust based on hotel count
             transition="transform 0.3s ease, box-shadow 0.3s ease"
             _hover={{ transform: 'scale(1.05)', boxShadow: "2xl" }}
           >
             <HotelCard
-              imageUrl={hotel.imageUrl}
+              imageUrl={hotel.images[0]}
               name={hotel.name}
               location={hotel.location.address}
-              pricePerNight={hotel.pricePerNight.toString()}
+              pricePerNight={`${hotel.priceRange.min}-${hotel.priceRange.max}`}
               starRating={hotel.rating}
               isFullWidth={true}
             />

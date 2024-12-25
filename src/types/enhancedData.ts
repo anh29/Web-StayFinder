@@ -58,22 +58,16 @@ export type EnhancedBooking = {
   userId: string;
   hotelId: string;
   roomId: string;
+  hotelName: string;
+  roomType: string;
+  roomImage: string;
+  totalGuests: number;
   checkInDate: string;
   checkOutDate: string;
   totalPrice: number;
   currency: string;
-  status: "confirmed" | "pending" | "cancelled";
-  createdDate: string;
+  status: 'confirmed' | 'pending' | 'cancelled';
 };
-
-export type EnhancedPaymentMethod =
-  | "Credit Card"
-  | "Debit Card"
-  | "PayPal"
-  | "Bank Transfer"
-  | "Apple Pay"
-  | "Google Pay"
-  | "Cryptocurrency";
 
 export type EnhancedPromotion = {
   promotionId: string;

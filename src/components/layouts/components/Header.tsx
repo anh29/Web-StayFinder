@@ -16,83 +16,43 @@ import {
 import ElementEffect from "components/shared/effect/ElementEffect";
 import { headerNavDummy } from "data/common.dummy";
 import { Link, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { HeaderNav } from "types/common";
 import { handleScrollToTop } from "utils/common";
+import { getCookie, deleteCookie } from "utils/cookie";
+import UserMenu from "components/elements/UserMenu";
+import MenuItems from "components/elements/MenuItems";
 
 export interface HeaderProps {}
 
 export default function Header(props: HeaderProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const location = useLocation(); // Get the current location
-  const user = "";
+  const location = useLocation();
+  const [user, setUser] = useState<string | null>("");
+
+  const checkUserCookie = () => {
+    const cookieUser = getCookie("username");
+    if (cookieUser !== user) {
+      setUser(cookieUser);
+    }
+  };
+
+  useEffect(() => {
+    checkUserCookie(); 
+
+    const interval = setInterval(checkUserCookie, 1000); 
+
+    return () => clearInterval(interval); 
+  }, [user]);
 
   const handleToggleMenu = () => {
     setIsOpen((prev) => !prev);
   };
 
-  const renderMenuItem = (title: string, isHighlighted: boolean) => {
-    return (
-      <Box
-        position="relative"
-        display="flex"
-        alignItems="center"
-        gap="0.5rem"
-        color={isHighlighted ? "google.yellow" : "black"}
-        fontWeight={isHighlighted ? "bold" : "normal"}
-      >
-        <Box
-          w="1rem"
-          h="1rem"
-          borderRadius="50%"
-          bg="black"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          mb="0.125rem"
-          transition="all 0.35s ease-in-out"
-          _groupHover={{
-            bg: "google.yellow",
-          }}
-        >
-          <Icon
-            as={FaPlus}
-            w="0.5rem"
-            h="0.5rem"
-            color="white"
-            transition="all 0.35s ease-in-out"
-            _groupHover={{
-              color: "black",
-              transform: "rotate(360deg)",
-            }}
-          />
-        </Box>
-        <Text
-          as="span"
-          transition="all 0.35s ease-in-out"
-          _groupHover={{
-            color: "google.yellow",
-            transform: "translateX(0.25rem)",
-          }}
-        >
-          {title}
-        </Text>
-        <Box
-          position="absolute"
-          left="calc(50% + 0.25rem)"
-          transform="translateX(-50%)"
-          bottom="-0.5rem"
-          width="0px"
-          h="2px"
-          bg="google.yellow"
-          transition="all 0.2s ease-in-out"
-          _groupHover={{
-            width: "100%",
-          }}
-        ></Box>
-      </Box>
-    );
+  const handleLogout = () => {
+    deleteCookie("username");
+    setUser(null);
   };
 
   const renderMenu = (
@@ -100,7 +60,6 @@ export default function Header(props: HeaderProps) {
     index: number,
     placement?: PlacementWithLogical
   ) => {
-    // Determine if this menu item should be highlighted
     const isHighlighted = location.pathname === header.href;
 
     return header.children ? (
@@ -120,7 +79,9 @@ export default function Header(props: HeaderProps) {
           role="group"
         >
           <Link to={header.href}>
-            <Text fontSize={20}>{renderMenuItem(header.title, isHighlighted)}</Text>
+            <Text fontSize={20}>
+              <MenuItems title={header.title} isHighlighted={isHighlighted} />
+            </Text>
           </Link>
         </MenuButton>
 
@@ -131,11 +92,10 @@ export default function Header(props: HeaderProps) {
         </MenuList>
       </Menu>
     ) : (
-      <Box role="group">
+      <Box role="group" key={index}>
         <MenuItem
           borderColor="google.yellow"
           onClick={handleToggleMenu}
-          key={index}
           as={Button}
           color="black"
           justifyContent="flex-start"
@@ -147,7 +107,9 @@ export default function Header(props: HeaderProps) {
           }}
         >
           <Link to={header.href}>
-            <Text fontSize={20}>{renderMenuItem(header.title, isHighlighted)}</Text>
+            <Text fontSize={20}>
+              <MenuItems title={header.title} isHighlighted={isHighlighted} />
+            </Text>
           </Link>
         </MenuItem>
       </Box>
@@ -217,22 +179,7 @@ export default function Header(props: HeaderProps) {
               ))}
             </Menu>
           </List>
-          {user ? (
-            <Avatar name={user} src="" size="md" bg="#06B3C4" />
-          ) : (
-            <Box
-              as="button"
-              borderRadius="md"
-              boxShadow="md"
-              fontSize={20}
-              bg="#06B3C4"
-              color="white"
-              px={6}
-              py={2}
-            >
-              Login
-            </Box>
-          )}
+          <UserMenu user={user} handleLogout={handleLogout}/>
         </Box>
 
         <Box display={{ base: "block", lg: "none" }}>
@@ -246,22 +193,7 @@ export default function Header(props: HeaderProps) {
             />
             <MenuList transition="all 0.1s" zIndex={999}>
               {headerNavDummy.map((nav, index) => renderMenu(nav, index))}
-              <Box display="flex" justifyContent="flex-end" px="1rem">
-                {user ? (
-                  <Avatar name={user} src="" size="md" bg="#06B3C4" />
-                ) : (
-                  <Link to="/">
-                    <Text
-                      color="#06B3C4"
-                      textDecoration="underline"
-                      fontSize="20px"
-                      fontWeight="bold"
-                    >
-                      Login
-                    </Text>
-                  </Link>
-                )}
-              </Box>
+              <UserMenu user={user} handleLogout={handleLogout}/>
             </MenuList>
           </Menu>
         </Box>

@@ -6,7 +6,6 @@ import {
   Availability,
   Amenities,
   Booking,
-  PaymentMethod,
   Promotion,
   Policy,
 } from "types/data";
@@ -33,7 +32,17 @@ export const fetchRooms = async (): Promise<Room[]> => {
 };
 
 export const fetchUsers = async (): Promise<User[]> => {
-  return fetchData<User[]>("/data/users.json");
+  return fetchData<User[]>("/data/user.json");
+};
+
+export const fetchUserById = async (userId: string): Promise<User | null> => {
+  try {
+    const allUsers: User[] = await fetchData<User[]>("/data/user.json");
+    const user = allUsers.find((user) => user.userId === userId);
+    return user || null;
+  } catch (error) {
+    throw new Error("Could not fetch user");
+  }
 };
 
 export const fetchReviews = async (): Promise<Review[]> => {
@@ -48,12 +57,15 @@ export const fetchAvailability = async (): Promise<Availability[]> => {
   return fetchData<Availability[]>("/data/availability.json");
 };
 
-export const fetchBookings = async (): Promise<Booking[]> => {
-  return fetchData<Booking[]>("/data/bookings.json");
-};
-
-export const fetchPaymentMethods = async (): Promise<PaymentMethod[]> => {
-  return fetchData<PaymentMethod[]>("/data/payment_methods.json");
+export const fetchBookings = async (userId: string): Promise<Booking[]> => {
+  try {
+    const allBookings: Booking[] = await fetchData<Booking[]>(
+      "/data/booking.json"
+    );
+    return allBookings.filter((booking) => booking.userId === userId);
+  } catch (error) {
+    return [];
+  }
 };
 
 export const fetchPromotions = async (): Promise<Promotion[]> => {
