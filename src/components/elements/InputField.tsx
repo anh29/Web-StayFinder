@@ -11,7 +11,7 @@ interface InputFieldProps {
 }
 
 export const InputField: React.FC<InputFieldProps> = ({ icon, placeholder, value, name, onChange, type = 'text', width }) => (
-  <Flex alignItems="center" flex={1}>
+  <Flex alignItems="center" flex={1} width={width}>
     {icon}
     <Input
       name={name}
@@ -26,7 +26,6 @@ export const InputField: React.FC<InputFieldProps> = ({ icon, placeholder, value
       _hover={{ borderColor: 'teal.400' }}
       _focus={{ borderColor: 'teal.500', boxShadow: '0 0 0 1px teal.500' }}
       minWidth={{ base: '240px' }}
-      width={width}
     />
   </Flex>
 );

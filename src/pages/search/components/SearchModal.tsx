@@ -13,7 +13,7 @@ interface SearchModalProps {
 const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
   const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useState({
-    location: "",
+    location: '',
     checkInDate: null as Date | null,
     checkOutDate: null as Date | null,
     persons: 1,
@@ -41,6 +41,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
     }
 
     const query = `?location=${encodeURIComponent(location)}&checkIn=${formatDate(checkInDate)}&checkOut=${formatDate(checkOutDate)}&persons=${persons}`;
+    setLoading(true);
     history.push(`/search${query}`);
     onClose();
     toast({
@@ -50,12 +51,12 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
       duration: 3000,
       isClosable: true,
     });
+    setLoading(false); // Set loading to false after the search is initiated
   };
 
-  const handleLocationSelect = (name: string) => {
-    setSearchParams((prev) => ({ ...prev, location: name }));
+  const handleLocationSelect = (description: string) => {
+    setSearchParams((prev) => ({ ...prev, location: description }));
   };
-
   return (
     <Box
       borderRadius="lg"
@@ -78,8 +79,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
       ) : (
         <Stack spacing={4}>
           <Text fontSize="xl" fontWeight="semibold">Location</Text>
-          <SearchLocation onLocationSelect={({ name }) => handleLocationSelect(name)} />
-
+          <SearchLocation onLocationSelect={handleLocationSelect} />
           <Text fontSize="xl" fontWeight="semibold">Dates</Text>
           <DateSelection
             checkInDate={searchParams.checkInDate}
@@ -131,7 +131,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
               variant="outline"
               onClick={() => {
                 setSearchParams({
-                  location: "",
+                  location: '',
                   checkInDate: null,
                   checkOutDate: null,
                   persons: 1,

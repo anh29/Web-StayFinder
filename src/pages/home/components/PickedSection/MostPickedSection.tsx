@@ -1,22 +1,32 @@
-import { Box, Flex, Heading, Spinner, Text } from "@chakra-ui/react";
-import { fetchEnhancedHotels } from "api/fetchData";
-import HotelCard from "components/layouts/HotelCard";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Flex,
+  Heading,
+  Spinner,
+  Text,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
+import { fetchEnhancedHotels } from "api/fetchData";
+import Carousel from "components/widgets/Carousel/Carousel";
 import { EnhancedHotel } from "types/enhancedData";
 import { getTopHotels } from "utils/getTopHotels";
+import HotelCard from "components/elements/Card/HotelCard";
 
-const MostPickedSection = () => {
+const MostPickedSection: React.FC = () => {
   const [hotels, setHotels] = useState<EnhancedHotel[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const history = useHistory();
+  const isMobile = useBreakpointValue({ base: true, md: false });
+
   useEffect(() => {
     const loadHotels = async () => {
       try {
         const fetchedHotels = await fetchEnhancedHotels();
         setHotels(fetchedHotels);
-      } catch (error) {
+      } catch (err) {
         setError("Failed to load hotels. Please try again later.");
       } finally {
         setLoading(false);
@@ -27,6 +37,45 @@ const MostPickedSection = () => {
   }, []);
 
   const top5Hotels = getTopHotels({ hotels, top: 5 });
+
+  const handleClick = (hotelId: string) => {
+    history.push(`/hotel?id=${hotelId}`);
+  };
+
+  const renderHotelCards = ({
+    hotel,
+    sizeCard,
+    sizeImage,
+    sizeWrapper,
+  }: {
+    hotel: EnhancedHotel;
+    sizeCard: object;
+    sizeImage: object;
+    sizeWrapper: object;
+  }) => {
+    return (
+      <HotelCard
+        key={hotel.hotelId}
+        hotel={hotel}
+        handleClick={() => handleClick(hotel.hotelId)}
+        cardProps={{
+          borderWidth: 2,
+          borderColor: "blue.500",
+          ...sizeCard,
+        }}
+        imageProps={{
+          src: hotel.images[0],
+          ...sizeImage,
+          overlayProps: { bg: "rgba(255, 255, 255, 0.8)", color: "black" },
+        }}
+        wrapperProps={{
+          ...sizeWrapper,
+          _hover: { transform: "scale(1.05)", boxShadow: "sm" },
+          transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        }}
+      />
+    );
+  };
 
   if (loading) {
     return (
@@ -43,61 +92,54 @@ const MostPickedSection = () => {
       </Box>
     );
   }
-  const handleClick = (hotelId: string) => {
-    history.push(`/hotel?id=${hotelId}`);
+
+  const mobileProps = {
+    sizeCard: { h: "200px" },
+    sizeImage: { h: "200px" },
+    sizeWrapper: { width: "100%" },
   };
+
+  const desktopTopCardProps = {
+    sizeCard: { h: { base: "200px", md: "100%" } },
+    sizeImage: { h: { base: "200px", md: "80%" } },
+    sizeWrapper: { width: { base: "100%", md: "33%" } },
+  };
+
+  const desktopOtherCardsProps = {
+    sizeCard: { h: { base: "200px", md: "260px" } },
+    sizeImage: { h: { base: "200px", md: "160px" } },
+    sizeWrapper: { width: { base: "100%", sm: "48%" } },
+  };
+
   return (
     <Box id="most-picked" pt={10}>
       <Heading size="lg" mb={6} textAlign="center">
         Most Picked
       </Heading>
-      <Flex flexWrap="wrap" justifyContent="space-between">
-        {/* Best hotel displayed in full width */}
-        <Box
-          width={{ base: "100%", md: "33%" }}
-          my={1}
-          position="relative"
-          onClick={() => handleClick(top5Hotels[0].hotelId)}
-        >
-          <HotelCard
-            imageUrl={top5Hotels[0].images[0]}
-            name={top5Hotels[0].name}
-            location={top5Hotels[0].location.address}
-            pricePerNight={`${top5Hotels[0].priceRange.min}-${top5Hotels[0].priceRange.max}`}
-            starRating={top5Hotels[0].rating}
-            isFullWidth={true}
-            imageHeight={{ base: "200px", md: "424px" }}
-          />
-        </Box>
+      {isMobile ? (
+        <Carousel
+          items={top5Hotels.map((hotel) =>
+            renderHotelCards({ hotel, ...mobileProps })
+          )}
+          itemsPerPage={1}
+          cardWidth={300}
+        />
+      ) : (
+        <Flex flexWrap="wrap" justifyContent="space-between" gap={3}>
+          {/* Top hotel */}
+          {renderHotelCards({
+            hotel: top5Hotels[0],
+            ...desktopTopCardProps,
+          })}
 
-        {/* Remaining hotels displayed in a flex box */}
-        <Box
-          width={{ base: "100%", md: "66%" }}
-          display="flex"
-          flexWrap="wrap"
-          justifyContent="space-between"
-        >
-          {top5Hotels.slice(1).map((hotel) => (
-            <Box
-              key={hotel.hotelId}
-              p={0}
-              m={1}
-              width={{ base: "100%", sm: "48%" }}
-              position="relative"
-              onClick={() => handleClick(hotel.hotelId)}
-            >
-              <HotelCard
-                imageUrl={hotel.images[0]}
-                name={hotel.name}
-                location={hotel.location.address}
-                pricePerNight={`${hotel.priceRange.min}-${hotel.priceRange.max}`} // Corrected price range
-                starRating={hotel.rating}
-                isFullWidth={true} // Set to false for smaller cards
-              />
-            </Box>
-          ))}
-        </Box>
-      </Flex>
+          {/* Other hotels */}
+          <Flex width={{ base: "100%", md: "66%" }} flexWrap="wrap" gap={3}>
+            {top5Hotels.slice(1).map((hotel) =>
+              renderHotelCards({ hotel, ...desktopOtherCardsProps })
+            )}
+          </Flex>
+        </Flex>
+      )}
     </Box>
   );
 };

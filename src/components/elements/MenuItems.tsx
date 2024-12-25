@@ -1,7 +1,8 @@
 import { Box, Icon, Text } from "@chakra-ui/react";
+import { IconType } from "react-icons";
 import { FaPlus } from "react-icons/fa";
 
-const MenuItems = ({title, isHighlighted} : {title: string, isHighlighted: boolean}) => {
+const MenuItems = ({title, icon, isHighlighted} : {title: string, icon: IconType, isHighlighted: boolean}) => {
   return (
     <Box
       position="relative"
@@ -12,8 +13,8 @@ const MenuItems = ({title, isHighlighted} : {title: string, isHighlighted: boole
       fontWeight={isHighlighted ? "bold" : "normal"}
     >
       <Box
-        w="1rem"
-        h="1rem"
+        w="1.5rem"
+        h="1.5rem"
         borderRadius="50%"
         bg="black"
         display="flex"
@@ -26,9 +27,9 @@ const MenuItems = ({title, isHighlighted} : {title: string, isHighlighted: boole
         }}
       >
         <Icon
-          as={FaPlus}
-          w="0.5rem"
-          h="0.5rem"
+          as={icon || FaPlus}
+          w="1rem"
+          h="1rem"
           color="white"
           transition="all 0.35s ease-in-out"
           _groupHover={{

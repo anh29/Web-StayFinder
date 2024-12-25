@@ -1,16 +1,16 @@
-import { Box, Flex, Heading, Button } from '@chakra-ui/react';
-import { fetchEnhancedHotels } from 'api/fetchData';
-import HotelCard from 'components/layouts/HotelCard';
-import { useCarousel } from 'hooks/useCarousel';
-import { useState, useEffect } from 'react';
-import { EnhancedHotel } from 'types/enhancedData';
-import { Hotel } from 'types/hotels';
-import { getTopHotels } from 'utils/getTopHotels';
+import { Box, Heading } from "@chakra-ui/react";
+import { fetchEnhancedHotels } from "api/fetchData";
+import { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { EnhancedHotel } from "types/enhancedData";
+import { getTopHotels } from "utils/getTopHotels";
+import Carousel from "components/widgets/Carousel/Carousel";
+import HotelCard from "components/elements/Card/HotelCard";
 
 const PopularChoiceSection = () => {
   const [hotels, setHotels] = useState<EnhancedHotel[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  
+  const history = useHistory();
+
   useEffect(() => {
     const loadHotels = async () => {
       try {
@@ -18,106 +18,49 @@ const PopularChoiceSection = () => {
         setHotels(fetchedHotels);
       } catch (error) {
         console.error("Failed to fetch hotels:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
     loadHotels();
   }, []);
-  const topHotels = getTopHotels({ hotels, top: 8 });
-  const { currentIndex, next, prev } = useCarousel(0, 1); // 1 item per page for carousel
 
-  const cardWidth = 300; // Fixed width for each card in pixels
-  const hotelCount = topHotels.length;
+  const topHotels = getTopHotels({ hotels, top: 8 });
+
+  const handleClick = (hotelId: string) => {
+    history.push(`/hotel?id=${hotelId}`);
+  };
+
+  const cardWidth = 300;
+
+  const hotelCards = topHotels.map((hotel) => (
+    <HotelCard
+      key={hotel.hotelId}
+      hotel={hotel}
+      handleClick={() => handleClick(hotel.hotelId)}
+      cardProps={{
+        width: { base: "100%", md: `${cardWidth}px` },
+      }}
+      imageProps={{
+        src: hotel.images[0],
+        h: { base: "140px", md: "280px" },
+        overlayProps: { bg: "rgba(255, 255, 255, 0.8)", color: "black" },
+      }}
+      wrapperProps={{
+        width: { md: "100%" },
+        _hover: { transform: "scale(1.05)"},
+        height: { base: "auto", md: "400px" },
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+      }}
+    />
+  ));
 
   return (
-    <Box id='popular-choices' pt={20} borderRadius="md" boxShadow="md">
-      <Heading size="lg" mb={6} textAlign="center">Popular Choices</Heading>
+    <Box id="popular-choices" pt={10}>
+      <Heading size="lg" mb={6} textAlign="center">
+        Popular Choices
+      </Heading>
 
-      {/* Carousel for small screens */}
-      <Box overflow="hidden" display={{ base: 'block', sm: 'none' }} position="relative">
-        <Flex align="center"> {/* Center the buttons and cards vertically */}
-          {/* Navigation buttons */}
-          <Button
-            onClick={() => prev(hotelCount)}
-            variant="solid"
-            zIndex={1}
-            colorScheme="teal"
-            bg="rgb(255 255 255 / 60%)" // Semi-transparent background
-            color="black" // Text color
-            _hover={{ bg: "rgba(0, 0, 0, 0.8)" }} // Darker on hover
-            position={'absolute'}
-            left={1}
-          >
-            &lt;
-          </Button>
-
-          <Flex
-            transition="transform 0.5s ease"
-            transform={`translateX(-${currentIndex * (cardWidth + 16)}px)`} // 16px for margin
-            width={`${hotelCount * (cardWidth + 16)}px`} // Set a fixed width for the flex container
-          >
-            {topHotels.map((hotel) => (
-              <Box
-                key={hotel.hotelId}
-                mx={2} // Space between cards
-                width={`${cardWidth}px`} // Fixed width for each card
-                flexShrink={0} // Prevent cards from shrinking
-              >
-                <HotelCard
-                  imageUrl={hotel.images[0]}
-                  name={hotel.name}
-                  location={hotel.location.address}
-                  pricePerNight={`${hotel.priceRange.min}-${hotel.priceRange.max}`}
-                  starRating={hotel.rating}
-                  isFullWidth={true}
-                />
-              </Box>
-            ))}
-          </Flex>
-
-          <Button
-            onClick={() => next(hotelCount)}
-            variant="solid"
-            zIndex={1}
-            colorScheme="teal"
-            bg="rgb(255 255 255 / 60%)" // Semi-transparent background
-            color="black" // Text color
-            _hover={{ bg: "rgba(0, 0, 0, 0.8)" }} // Darker on hover
-            position={'absolute'}
-            right={1}
-          >
-            &gt;
-          </Button>
-        </Flex>
-      </Box>
-
-      {/* Grid layout for larger screens */}
-      <Flex
-        flexWrap="wrap"
-        justifyContent={hotelCount > 0 ? "center" : "flex-start"}
-        display={{ base: 'none', sm: 'flex' }} // Hide on small screens
-      >
-        {topHotels.map((hotel) => (
-          <Box
-            key={hotel.hotelId}
-            m={2}
-            width={hotelCount < 3 ? "30%" : `${cardWidth}px`} // Adjust based on hotel count
-            transition="transform 0.3s ease, box-shadow 0.3s ease"
-            _hover={{ transform: 'scale(1.05)', boxShadow: "2xl" }}
-          >
-            <HotelCard
-              imageUrl={hotel.images[0]}
-              name={hotel.name}
-              location={hotel.location.address}
-              pricePerNight={`${hotel.priceRange.min}-${hotel.priceRange.max}`}
-              starRating={hotel.rating}
-              isFullWidth={true}
-            />
-          </Box>
-        ))}
-      </Flex>
+      <Carousel items={hotelCards} itemsPerPage={1} cardWidth={cardWidth} />
     </Box>
   );
 };

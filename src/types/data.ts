@@ -36,9 +36,17 @@ export type Review = {
   reviewId: string;
   hotelId: string;
   userId: string;
-  rating: number; // e.g., between 1 and 5
+  rating: number;
   comment: string;
 };
+
+export type ReviewHash = {
+  userHash: string;
+  content: string;
+  rating: number;
+  imgUrl: string;
+  timestamp: string;
+}
 
 export type Amenities = {
   amenities: string[]

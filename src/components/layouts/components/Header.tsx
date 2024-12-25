@@ -79,9 +79,9 @@ export default function Header(props: HeaderProps) {
           role="group"
         >
           <Link to={header.href}>
-            <Text fontSize={20}>
-              <MenuItems title={header.title} isHighlighted={isHighlighted} />
-            </Text>
+            <Box fontSize={20}>
+              <MenuItems title={header.title} icon={header.icon} isHighlighted={isHighlighted} />
+            </Box>
           </Link>
         </MenuButton>
 
@@ -107,9 +107,9 @@ export default function Header(props: HeaderProps) {
           }}
         >
           <Link to={header.href}>
-            <Text fontSize={20}>
-              <MenuItems title={header.title} isHighlighted={isHighlighted} />
-            </Text>
+            <Box fontSize={20}>
+              <MenuItems title={header.title} icon={header.icon} isHighlighted={isHighlighted} />
+            </Box>
           </Link>
         </MenuItem>
       </Box>
@@ -174,7 +174,7 @@ export default function Header(props: HeaderProps) {
                   }}
                   elementType={"li"}
                 >
-                  <Text fontSize={20}>{renderMenu(nav, index)}</Text>
+                  <Box fontSize={20}>{renderMenu(nav, index)}</Box>
                 </ElementEffect>
               ))}
             </Menu>

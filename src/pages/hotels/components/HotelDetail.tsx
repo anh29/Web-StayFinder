@@ -1,6 +1,7 @@
-import { Box, Text, Image, Button, Spinner, Flex, Heading, Grid } from "@chakra-ui/react";
+import { Box, Text, Image, Button, Spinner, Flex, Heading, Grid, Stack } from "@chakra-ui/react";
 import { fetchRoomsByHotelId } from "api/api";
 import { fetchEnhancedHotelById } from "api/fetchData";
+import Maps from "components/layouts/components/Maps";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { Room } from "types/data";
@@ -67,7 +68,9 @@ const HotelDetail = () => {
   };
 
   return (
+    <>
     <Box w="100%" maxW="1300px" p={4} mx="auto" bgGradient="linear(to-br, teal.500, purple.500)" borderRadius="lg" boxShadow="2xl" overflow="hidden">
+      {/* Hotel Information Section */}
       <Flex direction={{ base: "column", md: "row" }} mb={8}>
         <Box flex="1" position="relative">
           <Image
@@ -82,17 +85,22 @@ const HotelDetail = () => {
             _hover={{ transform: 'scale(1.05)' }}
           />
         </Box>
-        <Box flex="1" p={4} color="white" bg="rgba(0, 0, 0, 0.5)" borderRadius="lg" boxShadow="md" ml={{ md: 4 }} position="relative">
+        <Box flex="1" p={4} color="white" bg="rgba(0, 0, 0, 0.6)" borderRadius="lg" boxShadow="md" ml={{ md: 4 }} position="relative">
           <Text fontSize="4xl" fontWeight="bold" textShadow="2px 2px 4px rgba(0, 0, 0, 0.7)">{hotel.name}</Text>
           <Text fontSize="lg" mt={2} color="gray.300">{hotel.description || "No description available."}</Text>
-          <Box mt={4}>
+          
+          {/* Location Info */}
+          <Stack mt={4}>
             <Text fontSize="lg" fontWeight="bold">Location:</Text>
             <Text>{`${hotel.location.address}, ${hotel.location.city}, ${hotel.location.country}`}</Text>
-          </Box>
-          <Box mt={4}>
+          </Stack>
+
+          {/* Facilities */}
+          <Stack mt={4}>
             <Text fontSize="lg" fontWeight="bold">Facilities:</Text>
             <Text>{hotel.facilities.join(", ") || "No facilities listed."}</Text>
-          </Box>
+          </Stack>
+          
           <Button 
             mt={6} 
             colorScheme="teal" 
@@ -112,11 +120,11 @@ const HotelDetail = () => {
         <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={6}>
           {rooms.length > 0 ? (
             rooms.map((room) => (
-              <Box key={room.roomId} p={4} onClick={() => handleClick(room.roomId)} borderWidth={1} borderRadius="lg" bg="white" boxShadow="md" transition="transform 0.2s" _hover={{ transform: 'scale(1.05)' }}>
-                <Text fontSize="xl" fontWeight="bold">{room.type}</Text>
-                <Text>Price: ${room.price} {room.currency}</Text>
-                <Text>Capacity: {room.capacity} {room.capacity > 1 ? 'people' : 'person'}</Text>
-                <Text>Amenities: {room.amenities.join(", ") || "No amenities listed."}</Text>
+              <Box key={room.roomId} p={4} onClick={() => handleClick(room.roomId)} borderWidth={1} borderRadius="lg" bg="white" boxShadow="lg" transition="transform 0.3s" _hover={{ transform: 'scale(1.05)', boxShadow: 'lg' }}>
+                <Text fontSize="xl" fontWeight="bold" color="teal.600">{room.type}</Text>
+                <Text fontSize="md" mt={2}>Price: <strong>${room.price}</strong> {room.currency}</Text>
+                <Text fontSize="md">Capacity: {room.capacity} {room.capacity > 1 ? 'people' : 'person'}</Text>
+                <Text fontSize="md" mt={2}>Amenities: {room.amenities.join(", ") || "No amenities listed."}</Text>
               </Box>
             ))
           ) : (
@@ -125,6 +133,12 @@ const HotelDetail = () => {
         </Grid>
       </Box>
     </Box>
+
+    {/* Maps Section */}
+    <Box mt={8}>
+      <Maps />
+    </Box>
+    </>
   );
 };
 

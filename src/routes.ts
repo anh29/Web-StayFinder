@@ -9,7 +9,7 @@ import LoginPage from "pages/login/Login";
 import OrderHistory from "pages/order/OrderHistory";
 import UserProfile from "pages/profile/Profile";
 import RegisterPage from "pages/register/Register";
-import RoomDetailPage from "pages/rooms/components/DetailRoom";
+import RoomDetailPage from "pages/rooms/components/RoomDetailPage";
 import RoomsPage from "pages/rooms/RoomsPage";
 import SearchPage from "pages/search/SearchPage";
 

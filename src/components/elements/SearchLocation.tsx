@@ -1,106 +1,106 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Box, Input, Button, List, ListItem, Spinner } from '@chakra-ui/react';
-import mapboxgl from 'mapbox-gl';
-import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-
-const mapboxAccessToken = 'pk.eyJ1IjoiYW5uYTEwMSIsImEiOiJjbHk3eGRmbGkwYjQzMmlxNHg5bG95cjJhIn0.hyPx7VhosqgQInayT8xUIQ';
+import React, { useState, useEffect, useRef } from "react";
+import { Input, Box, List, ListItem, Spinner } from "@chakra-ui/react";
 
 interface SearchLocationProps {
-  onLocationSelect: (location: { lat: number; lng: number; name: string }) => void;
+  onLocationSelect: (description: string) => void;
 }
 
-const SearchLocation: React.FC<SearchLocationProps> = ({ onLocationSelect }) => {
-  const [inputValue, setInputValue] = useState('');
-  const [suggestions, setSuggestions] = useState<any[]>([]);
+const SearchLocation: React.FC<SearchLocationProps> = ({
+  onLocationSelect,
+}) => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState(false);
-  const geocoderRef = useRef<MapboxGeocoder | null>(null);
-  const handleResultRef = useRef<(event: any) => void>(() => {});
+  const [suggestions, setSuggestions] = useState<
+    google.maps.places.AutocompletePrediction[]
+  >([]);
+  const [inputValue, setInputValue] = useState<string>("");
 
   useEffect(() => {
-    (mapboxgl as any).accessToken = mapboxAccessToken;
+    if (window.google && inputRef.current) {
+      const autocomplete = new google.maps.places.Autocomplete(inputRef.current, {
+        types: ["geocode"],
+        componentRestrictions: { country: "VN" },
+      });
 
-    const geocoder = new MapboxGeocoder({
-      accessToken: mapboxAccessToken,
-      mapboxgl: (mapboxgl as any),
-      marker: false,
-      placeholder: 'Search for a location in Vietnam',
-      limit: 5,
-    });
-
-    handleResultRef.current = (event: any) => {
-      const { lng, lat } = event.result.geometry.coordinates;
-      const name = event.result.place_name;
-      onLocationSelect({ lat, lng, name });
-     
-      setSuggestions([]);
-    };
-
-    geocoder.on('result', handleResultRef.current);
-
-    geocoder.on('results', (event: any) => {
-      setSuggestions(event.features);
-      setLoading(false);
-    });
-
-    geocoderRef.current = geocoder;
-
-    const container = document.createElement('div');
-    container.className = 'geocoder-container';
-    document.body.appendChild(container);
-    geocoder.addTo(container);
-
-    return () => {
-      if (geocoderRef.current) {
-        geocoderRef.current.off('result', handleResultRef.current);
-        geocoderRef.current.off('results', handleResultRef.current);
-        geocoderRef.current.onRemove();
-      }
-    };
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        if (place && place.formatted_address) {
+          onLocationSelect(place.formatted_address);
+          setInputValue(place.formatted_address); // Set the input value to the formatted address
+        }
+      });
+    }
   }, [onLocationSelect]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setInputValue(value);
-    setLoading(true);
-    if (geocoderRef.current) {
-      geocoderRef.current.query(value);
+    const query = e.target.value;
+    setInputValue(query); // Update the input value state
+
+    if (query) {
+      setLoading(true);
+
+      const service = new google.maps.places.AutocompleteService();
+      service.getPlacePredictions({ input: query, componentRestrictions: { country: 'VN' } }, (predictions, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+          setSuggestions(predictions);
+        } else {
+          setSuggestions([]);
+        }
+        setLoading(false);
+      });
+    } else {
+      setSuggestions([]);
+      setLoading(false);
     }
   };
 
-  const handleSuggestionClick = (suggestion: any) => {
-    const { lng, lat } = suggestion.geometry.coordinates;
-    const name = suggestion.place_name;
-    onLocationSelect({ lat, lng, name });
-    setInputValue(name);
-    setSuggestions([]);
-  };
-
-  const handleClear = () => {
-    setInputValue('');
-    setSuggestions([]);
+  const handleSuggestionClick = (
+    prediction: google.maps.places.AutocompletePrediction
+  ) => {
+    onLocationSelect(prediction.description);
+    setInputValue(prediction.description); // Update the input value when a suggestion is clicked
+    setSuggestions([]); // Clear suggestions after selection
   };
 
   return (
-    <Box position="relative">
+    <Box>
       <Input
-        value={inputValue}
+        ref={inputRef}
+        value={inputValue} // Bind the input value to the state
+        placeholder="Search for a location"
+        size="md"
+        variant="outline"
+        bg="white"
+        borderColor="teal.300"
+        borderRadius="md"
         onChange={handleInputChange}
-        placeholder="Type a location in Vietnam"
-        mb={2}
       />
-      <Button onClick={handleClear} colorScheme="gray" size="sm">Clear</Button>
-      {loading && <Spinner size="sm" />}
+
+      {/* Show loading spinner while fetching suggestions */}
+      {loading && (
+        <Box mt={2} textAlign="center">
+          <Spinner size="sm" color="teal.500" />
+        </Box>
+      )}
+
+      {/* Display suggestions if there are any */}
       {suggestions.length > 0 && (
-        <List spacing={1} borderWidth="1px" borderRadius="md" maxHeight="200px" overflowY="auto" position="absolute" bg="white" zIndex={1}>
-          {suggestions.map((suggestion) => (
-            <ListItem 
-              key={suggestion.id} 
-              onClick={() => handleSuggestionClick(suggestion)} 
-              p={2} 
-              cursor="pointer" 
-              _hover={{ bg: 'gray.200' }}
+        <List
+          spacing={1}
+          mt={2}
+          maxHeight="200px"
+          overflowY="auto"
+          border="1px solid #ddd"
+          borderRadius="md"
+        >
+          {suggestions.map((prediction) => (
+            <ListItem
+              key={prediction.place_id}
+              p={2}
+              _hover={{ bg: "teal.100", cursor: "pointer" }}
+              onClick={() => handleSuggestionClick(prediction)}
             >
-              {suggestion.place_name}
+              {prediction.description}
             </ListItem>
           ))}
         </List>

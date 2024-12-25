@@ -1,8 +1,9 @@
-import { Box, Text, Flex, Grid, keyframes, Image, Button } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { Box, Text, Flex, Grid, Button, keyframes } from "@chakra-ui/react";
 import { fetchEnhancedHotels } from "api/fetchData";
-import { useEffect, useState } from "react";
 import { EnhancedHotel } from "types/enhancedData";
 import { Link, useHistory } from "react-router-dom";
+import HotelCard from "components/elements/Card/HotelCard";
 
 const bounce = keyframes`
   0%, 100% { transform: translateY(0); }
@@ -11,7 +12,7 @@ const bounce = keyframes`
 
 export interface HotelsProps {}
 
-export default function Hotels(props: HotelsProps) {
+const Hotels: React.FC<HotelsProps> = () => {
   const history = useHistory();
   const [hotels, setHotels] = useState<EnhancedHotel[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -63,7 +64,7 @@ export default function Hotels(props: HotelsProps) {
           animation={`${bounce} 1s infinite`}
           _hover={{ bg: "teal.600" }}
         >
-          <Link to='/rooms'>Find Your Stay</Link>
+          <Link to="/rooms">Find Your Stay</Link>
         </Button>
       </Flex>
 
@@ -74,45 +75,43 @@ export default function Hotels(props: HotelsProps) {
       ) : (
         <Grid templateColumns="repeat(auto-fill, minmax(300px, 1fr))" gap={6}>
           {hotels.map((hotel) => (
-            <Box
+            <HotelCard
               key={hotel.hotelId}
-              borderRadius="lg"
-              overflow="hidden"
-              boxShadow="lg"
-              bg="white"
-              position="relative"
-              transition="0.4s ease-in-out"
-              _hover={{
-                boxShadow: "2xl",
-                transform: "scale(1.05) rotate(2deg)",
-                filter: "brightness(1.1)",
+              hotel={hotel}
+              handleClick={() => handleClick(hotel.hotelId)}
+              cardProps={{
+                borderRadius: "lg",
+                boxShadow: "lg",
+                bg: "white",
+                h: "340px",
+                position: "relative",
+                transition: "0.4s ease-in-out",
+                _hover: {
+                  boxShadow: "2xl",
+                  transform: "scale(1.05) rotate(2deg)",
+                  filter: "brightness(1.1)",
+                },
+                cursor: "pointer",
               }}
-              onClick={() => handleClick(hotel.hotelId)}
-              cursor="pointer"
-            >
-              <Image
-                src={
+              imageProps={{
+                src:
                   hotel.images[0] ||
-                  `https://picsum.photos/300/200?random=${hotel.hotelId}`
-                }
-                alt={hotel.name}
-                objectFit="cover"
-                borderTopRadius="lg"
-                transition="transform 0.4s ease-in-out"
-              />
-              <Box p={4}>
-                <Text fontWeight="bold" fontSize="lg" color="teal.800">
-                  {hotel.name}
-                </Text>
-                <Text color="gray.600" mt={1}>
-                  {hotel.description ||
-                    "A unique stay experience in the heart of the city!"}
-                </Text>
-              </Box>
-            </Box>
+                  `https://picsum.photos/300/200?random=${hotel.hotelId}`,
+                alt: hotel.name,
+                h: "200px",
+                objectFit: "cover",
+                borderTopRadius: "lg",
+                transition: "transform 0.4s ease-in-out",
+              }}
+              wrapperProps={{
+                onClick: () => handleClick(hotel.hotelId),
+              }}
+            />
           ))}
         </Grid>
       )}
     </Box>
   );
-}
+};
+
+export default Hotels;

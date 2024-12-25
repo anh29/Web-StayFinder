@@ -2,37 +2,31 @@ import { Box, Button, Heading, Image, Stack, Text } from "@chakra-ui/react";
 import ElementEffectEntering from "components/shared/effect/ElementEffectEntering";
 import { banner } from "assets/images";
 import StatBox from "components/elements/StatBox";
-import { STATISTICS } from "./data";
 import { Link } from "react-router-dom";
+import { ANIMATION_PROPS, STATISTICS } from "./constants";
 
 export interface HeroSectionProps {}
 
-export default function HeroSection(props: HeroSectionProps) {
+const HeroSection: React.FC<HeroSectionProps> = () => {
   return (
     <Box
-      id="#"
+      id="hero-section"
       display="flex"
       flexDirection={{ base: "column", md: "row" }}
       justifyContent="space-between"
       px={{ base: "1.5rem", md: "2rem" }}
-      py={{ base: "2rem", md: "3rem" }}
+      pt={{ base: "2rem", md: "3rem" }}
       gap={{ base: "1.5rem", md: "2rem" }}
     >
-      {/* Text Section */}
       <Box
         display="flex"
         flexDirection="column"
         justifyContent="center"
-        alignItems={{ sm: "center", md: "flex-start" }}
+        alignItems={{ base: "center", md: "flex-start" }}
         maxW={{ base: "100%", md: "500px" }}
         gap="1.5rem"
       >
-        <ElementEffectEntering
-          motionProps={{
-            initial: { y: "150%" },
-            animate: { y: 0, transition: { duration: 1, delay: 0.2 } },
-          }}
-        >
+        <ElementEffectEntering motionProps={ANIMATION_PROPS.title}>
           <Heading
             as="h1"
             fontSize={{ base: "1.75rem", sm: "2rem", md: "3rem" }}
@@ -44,12 +38,7 @@ export default function HeroSection(props: HeroSectionProps) {
           </Heading>
         </ElementEffectEntering>
 
-        <ElementEffectEntering
-          motionProps={{
-            initial: { scale: 0 },
-            animate: { scale: 1, transition: { duration: 1, delay: 0.4 } },
-          }}
-        >
+        <ElementEffectEntering motionProps={ANIMATION_PROPS.text}>
           <Text
             fontSize={{ base: "1rem", sm: "1.25rem", md: "1.5rem" }}
             fontWeight="light"
@@ -61,40 +50,24 @@ export default function HeroSection(props: HeroSectionProps) {
           </Text>
         </ElementEffectEntering>
 
-        <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems={"center"}
-        >
-          <ElementEffectEntering
-            motionProps={{
-              initial: { scale: 0 },
-              animate: { scale: 1, transition: { duration: 1, delay: 0.6 } },
-            }}
+        <ElementEffectEntering motionProps={ANIMATION_PROPS.button}>
+          <Button
+            borderRadius="full"
+            bg="#06B3C4"
+            color="white"
+            px="6"
+            fontSize="1.25rem"
+            boxShadow="md"
+            _hover={{ bg: "#05A2B1" }}
+            textAlign="center"
+            alignSelf={{ base: "center", md: "flex-start" }}
+            aria-label="Discover hotels"
           >
-            <Button
-              borderRadius="full"
-              bg="#06B3C4"
-              color="white"
-              px="6"
-              fontSize="1.25rem"
-              boxShadow="md"
-              textAlign={"center"}
-              alignSelf={{ base: "center", md: "flex-start" }}
-            >
-              <Link to='/hotels'>Show More</Link>
-            </Button>
-          </ElementEffectEntering>
-        </Box>
+            <Link to="/hotels">Show More</Link>
+          </Button>
+        </ElementEffectEntering>
 
-        {/* Statistics Section */}
-        <ElementEffectEntering
-          motionProps={{
-            initial: { y: "150%" },
-            animate: { y: 0, transition: { duration: 1, delay: 0.8 } },
-          }}
-        >
+        <ElementEffectEntering motionProps={ANIMATION_PROPS.stats}>
           <Stack
             direction={{ base: "column", sm: "row" }}
             spacing={{ base: "1.5rem", md: "3rem" }}
@@ -105,35 +78,33 @@ export default function HeroSection(props: HeroSectionProps) {
             borderTop={{ md: "1px solid #E5E5E5" }}
           >
             {STATISTICS.map(({ icon: Icon, count, label }, index) => (
-      <StatBox key={index} icon={Icon} direction="row">
-        <Text fontSize="1.25rem" fontWeight="bold" color="#152C5B">
-          {count}
-          <Text as="span" color={"#B0B0B0"} fontWeight={"light"} ml="0.5rem">
-            {label}
-          </Text>
-        </Text>
-      </StatBox>
-    ))}
+              <StatBox key={index} icon={Icon} direction="row">
+                <Text fontSize="1.25rem" fontWeight="bold" color="#152C5B">
+                  {count}
+                  <Text
+                    as="span"
+                    color="#B0B0B0"
+                    fontWeight="light"
+                    ml="0.5rem"
+                  >
+                    {label}
+                  </Text>
+                </Text>
+              </StatBox>
+            ))}
           </Stack>
         </ElementEffectEntering>
       </Box>
 
-      {/* Image Section */}
-      <ElementEffectEntering
-        motionProps={{
-          initial: { opacity: 0 },
-          animate: { opacity: 1, transition: { duration: 1, delay: 1.0 } },
-        }}
-      >
+      <ElementEffectEntering motionProps={ANIMATION_PROPS.image}>
         <Box
-          display="flex"
+          display={{ base: "none", md: "flex" }}
           justifyContent="center"
           alignItems="center"
           position="relative"
           maxW={{ base: "100%", md: "600px" }}
           h={{ base: "300px", md: "400px" }}
         >
-          {/* Frame behind the banner */}
           <Box
             position="absolute"
             top="30px"
@@ -146,9 +117,9 @@ export default function HeroSection(props: HeroSectionProps) {
             zIndex={0}
           />
 
-          {/* Banner image */}
           <Image
             src={banner}
+            alt="Vacation banner"
             borderRadius="20% 5% 5% 5%"
             boxShadow="lg"
             w={{ base: "300px", sm: "400px", md: "500px" }}
@@ -160,4 +131,6 @@ export default function HeroSection(props: HeroSectionProps) {
       </ElementEffectEntering>
     </Box>
   );
-}
+};
+
+export default HeroSection;

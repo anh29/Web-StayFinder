@@ -8,6 +8,7 @@ import {
   Booking,
   Promotion,
   Policy,
+  ReviewHash,
 } from "types/data";
 
 const fetchData = async <T>(url: string): Promise<T> => {
@@ -47,6 +48,35 @@ export const fetchUserById = async (userId: string): Promise<User | null> => {
 
 export const fetchReviews = async (): Promise<Review[]> => {
   return fetchData<Review[]>("/data/review.json");
+};
+// // api/api.ts
+// import { Review } from "types/review";
+
+export const fetchReviewsByRoomId = async (roomId: string): Promise<ReviewHash[]> => {
+  // Simulating API call
+  return [
+    {
+      userHash: "abc1234xyz",
+      content: "Great room, very comfortable and spacious!",
+      rating: 5,
+      imgUrl: "https://t3.ftcdn.net/jpg/06/19/00/08/360_F_619000872_AxiwLsfQqRHMkNxAbN4l5wg1MsPgBsmo.jpg",
+      timestamp: "2024-10-01T12:00:00Z",
+    },
+    {
+      userHash: "def5678uvw",
+      content: "Clean and cozy, but a bit noisy at night.",
+      rating: 3,
+      imgUrl:"https://images.unsplash.com/photo-1631049552057-403cdb8f0658?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGhvdGVsJTIwYmVkcm9vbXxlbnwwfHwwfHx8MA%3D%3D",
+      timestamp: "2024-09-15T09:00:00Z",
+    },
+    {
+      userHash: "ghi9101rst",
+      content: "Fantastic location, great view, would stay again.",
+      rating: 4,
+      imgUrl: "https://thumbs.dreamstime.com/b/luxury-hotel-room-master-bedroom-creative-ai-design-background-instagram-facebook-wall-painting-photo-wallpaper-backgrounds-325040660.jpg",
+      timestamp: "2024-08-20T15:30:00Z",
+    },
+  ];
 };
 
 export const fetchAmenities = async (): Promise<Amenities> => {
