@@ -1,106 +1,120 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
+  Box,
+  Text,
+  VStack,
+  HStack,
   FormControl,
   FormLabel,
-  Input,
   Select,
-  Text,
   Button,
+  Divider,
   useToast,
 } from "@chakra-ui/react";
-import { Room } from "types/data";
+import CalendarAvailable from "./CalendarAvailable";
+import { Room } from "types/room";
 
 interface BookingFormProps {
   room: Room;
-  checkInDate: string;
-  checkOutDate: string;
-  paymentMethod: string;
-  setCheckInDate: (value: string) => void;
-  setCheckOutDate: (value: string) => void;
-  setPaymentMethod: (value: string) => void;
+  onSubmit: (data: any) => void;
 }
 
-const BookingForm: React.FC<BookingFormProps> = ({
-  room,
-  checkInDate,
-  checkOutDate,
-  paymentMethod,
-  setCheckInDate,
-  setCheckOutDate,
-  setPaymentMethod,
-}) => {
-  const toast = useToast(); // Hook for toast notifications
-  const [isSubmitting, setIsSubmitting] = useState(false); // Manage loading state
+const BookingForm: React.FC<BookingFormProps> = ({ room, onSubmit }) => {
+  const [checkInDate, setCheckInDate] = useState<string>("");
+  const [checkOutDate, setCheckOutDate] = useState<string>("");
+  const [paymentMethod, setPaymentMethod] = useState<string>("fulfill");
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [totalDays, setTotalDays] = useState<number>(0);
+  const toast = useToast();
 
-  const handleConfirmBooking = () => {
-    // Simulating the room ID check
-    if (room.roomId === "r101") {
-      toast({
-        title: "Not available now",
-        description: "Sorry, this room is not available for booking right now.",
-        status: "error",
-        duration: 4000,
-        isClosable: true,
-      });
+  useEffect(() => {
+    if (checkInDate && checkOutDate) {
+      calculateBookingDetails();
+    }
+  }, [checkInDate, checkOutDate, paymentMethod]);
+
+  const calculateBookingDetails = () => {
+    const checkInDateObj = new Date(checkInDate);
+    const checkOutDateObj = new Date(checkOutDate);
+
+    const days =
+      (checkOutDateObj.getTime() - checkInDateObj.getTime()) / (1000 * 3600 * 24);
+
+    if (days > 0) {
+      setTotalDays(days);
+      let price = room.price * days;
+      if (paymentMethod === "deposit") {
+        price *= 0.5;
+      }
+      setTotalPrice(price);
     } else {
-      // Handle normal booking logic here
       toast({
-        title: "Booking confirmed",
-        description: `Your booking for room ${room.type} has been confirmed.`,
-        status: "success",
-        duration: 4000,
+        title: "Invalid Dates",
+        description: "Check-out date must be after check-in date.",
+        status: "error",
+        duration: 5000,
         isClosable: true,
       });
+      setTotalDays(0);
+      setTotalPrice(0);
     }
   };
 
+  const handleDateChange = (range: [Date, Date]) => {
+    setCheckInDate(range[0].toISOString().split("T")[0]);
+    setCheckOutDate(range[1].toISOString().split("T")[0]);
+  };
+
+  const handleSubmit = () => {
+    if (!checkInDate || !checkOutDate || !paymentMethod) {
+      toast({
+        title: "Incomplete Information",
+        description: "Please fill in all required fields.",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+    onSubmit({ checkInDate, checkOutDate, paymentMethod, totalDays, totalPrice });
+  };
+
   return (
-    <>
-      <Text fontSize="lg" mb={4}>
-        {room.type} - {room.currency}{room.price} per night
+    <VStack spacing={6}>
+      <CalendarAvailable availabilityRanges={room.availableDates} onDateChange={handleDateChange} />
+      <Text fontSize="lg" fontWeight="bold">
+        {room.roomType} - {room.price.toLocaleString()} VND per night
       </Text>
-      <FormControl isRequired mb={4}>
-        <FormLabel>Check-in Date</FormLabel>
-        <Input
-          type="date"
-          value={checkInDate}
-          onChange={(e) => setCheckInDate(e.target.value)}
-        />
-      </FormControl>
-      <FormControl isRequired mb={4}>
-        <FormLabel>Check-out Date</FormLabel>
-        <Input
-          type="date"
-          value={checkOutDate}
-          onChange={(e) => setCheckOutDate(e.target.value)}
-        />
-      </FormControl>
-      <FormControl isRequired mb={4}>
-        <FormLabel>Guest Count</FormLabel>
-        <Text>
-          {room.capacity} {room.capacity > 1 ? "guests - 2 beds" : "guest - 1 bed"}
-        </Text>
-      </FormControl>
-      <FormControl isRequired mb={4}>
+      <Divider />
+      <HStack w="full" justifyContent="space-between">
+        <Text fontWeight="medium">Guest Capacity:</Text>
+        <Text>{room.capacity} guests ({Math.ceil(room.capacity / 2)} beds)</Text>
+      </HStack>
+      <FormControl isRequired>
         <FormLabel>Payment Method</FormLabel>
         <Select
           value={paymentMethod}
+          placeholder="Select payment method"
           onChange={(e) => setPaymentMethod(e.target.value)}
         >
-          <option value="">Select a payment</option>
-          <option value="deposit">Pay 10% deposit</option>
+          <option value="deposit">Pay 50% deposit</option>
           <option value="fulfill">Pay full</option>
         </Select>
       </FormControl>
-      <Button
-        mt={4}
-        colorScheme="blue"
-        onClick={handleConfirmBooking}
-        isLoading={isSubmitting}
-      >
+      <HStack w="full" justifyContent="space-between">
+        <Text>Total Days:</Text>
+        <Text fontWeight="bold">{totalDays}</Text>
+      </HStack>
+      <HStack w="full" justifyContent="space-between">
+        <Text>Total Price:</Text>
+        <Text fontWeight="bold" color="teal.500">
+          {totalPrice.toLocaleString()} VND
+        </Text>
+      </HStack>
+      <Button colorScheme="teal" size="lg" w="full" onClick={handleSubmit}>
         Confirm Booking
       </Button>
-    </>
+    </VStack>
   );
 };
 

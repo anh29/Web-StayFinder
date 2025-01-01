@@ -1,9 +1,15 @@
 import { AppRouter } from "components/elements/AppRouter";
-
+import VerifyEmailModal from "components/layouts/modal/VerifyEmailModal";
+import { UserProvider } from "context/UserContext";
 import { routes } from "routes";
 
-function App() {
-  return <AppRouter routes={routes} defaultRedirect="/test-page" />;
-}
+const App: React.FC = () => {
+  return (
+    <UserProvider>
+      <VerifyEmailModal />
+      <AppRouter routes={routes} defaultRedirect="/test-page" />
+    </UserProvider>
+  );
+};
 
 export default App;

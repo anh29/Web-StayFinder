@@ -12,8 +12,14 @@ const initialCenter = {
   lng: 108.1498646736145,
 };
 
-const Maps: React.FC = () => {
-  const [mapCenter, setMapCenter] = useState(initialCenter);
+// Define props interface
+interface MapsProps {
+  lat?: number; // Optional lat prop
+  lng?: number; // Optional lng prop
+}
+
+const Maps: React.FC<MapsProps> = ({ lat, lng }) => {
+  const [mapCenter, setMapCenter] = useState({ lat: lat || initialCenter.lat, lng: lng || initialCenter.lng });
   const [locationInfo, setLocationInfo] = useState<string | null>('Loading location info...');
   const mapRef = useRef<google.maps.Map | null>(null);
   const markerRef = useRef<google.maps.Marker | null>(null);

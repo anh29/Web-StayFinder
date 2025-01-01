@@ -34,12 +34,6 @@ export const routes: BasicRoute[] = [
         exact: true,
       },
       {
-        path: "/rooms",
-        label: "Rooms",
-        component: RoomsPage,
-        exact: true,
-      },
-      {
         path: "/room",
         label: "Detail Room",
         component: RoomDetailPage,
@@ -49,12 +43,6 @@ export const routes: BasicRoute[] = [
         path: "/about",
         label: "About Us",
         component: AboutPage,
-        exact: true,
-      },
-      {
-        path: "/contact",
-        label: "Contact Us",
-        component: ContactPage,
         exact: true,
       },
       {

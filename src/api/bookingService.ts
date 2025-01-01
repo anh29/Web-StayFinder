@@ -1,11 +1,15 @@
+import { BookingParams } from 'types/booking';
 import apiClient from './apiClient';
 
 export const bookRoom = async (
   roomId: string,
-  data: { checkInDate: string; checkOutDate: string }
+  data: BookingParams,
 ) => {
   const response = await apiClient.post(`/reservations/book/${roomId}`, data);
-  return response.data;
+  const reservationId = response.data.data._id;
+  const orders = await createPayment({ reservationId });
+
+  return orders;
 };
 
 export const cancelBooking = async (reservationId: string) => {
@@ -19,6 +23,6 @@ export const createPayment = async (data: { reservationId: string }) => {
 };
 
 export const getTransactionHistory = async () => {
-  const response = await apiClient.get('/transactions');
+  const response = await apiClient.get('transaction/customer');
   return response.data;
 };

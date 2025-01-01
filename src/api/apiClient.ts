@@ -1,15 +1,17 @@
 import axios from 'axios';
+import { API_URL } from 'constants/app';
+import { getCookie } from 'utils/cookie';
 
 const apiClient = axios.create({
-  baseURL: 'https://40b6-42-115-115-73.ngrok-free.app/api',
+  baseURL: `${API_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
+    'ngrok-skip-browser-warning': 'true'
   },
 });
 
-// Add token to the Authorization header if present
 apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = getCookie('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

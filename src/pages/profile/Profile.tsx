@@ -1,70 +1,84 @@
-import { fetchEnhancedUserById } from 'api/fetchData';
-import React, { useEffect, useState } from 'react';
-import { EnhancedUser } from 'types/enhancedData';
-import {
-  Box,
-  Avatar,
-  Text,
-  Spinner,
-  Alert,
-  AlertIcon,
-  SimpleGrid,
-  Card,
-  CardBody,
-  CardHeader,
-  Image,
-  Heading,
-  Button,
-} from '@chakra-ui/react';
+import React, { useContext } from 'react';
+import { Box, Avatar, Text, Heading, Icon, Flex } from '@chakra-ui/react';
+import { UserContext } from 'context/UserContext';
+import { FaPhone, FaEnvelope, FaUser, FaLock } from 'react-icons/fa';
 
-const UserProfile: React.FC<{ userId: string }> = ({ userId = 'u001' }) => {
-  const [user, setUser] = useState<EnhancedUser | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+const UserProfile: React.FC = () => {
+  const { user, loggedIn } = useContext(UserContext);
 
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const enhancedUser = await fetchEnhancedUserById(userId);
-        setUser(enhancedUser);
-      } catch (err) {
-        setError('Failed to fetch user data.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadUser();
-  }, [userId]);
-
-  if (loading) {
+  if (!loggedIn) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-        <Spinner size="xl" color="#06B3C4" />
+      <Box textAlign="center" mt={10}>
+        <Heading size="lg" color="teal.700">You are not logged in.</Heading>
       </Box>
     );
   }
 
-  if (error) {
-    return (
-      <Alert status="error" mb={4}>
-        <AlertIcon />
-        {error}
-      </Alert>
-    );
-  }
-
-  if (!user) {
-    return <Text textAlign="center">No user data available.</Text>;
-  }
-
   return (
-    <Box p={6} minH='300px' alignContent='center' bg="white" borderRadius="md" boxShadow="lg" maxW="600px" mx="auto">
-      <Box display="flex" alignItems="center" mb={4}>
-        <Avatar name={user.name} src="" size="xl" bg="#06B3C4" />
+    <Box
+      p={6}
+      minH="350px"
+      alignContent="center"
+      bg="white"
+      borderRadius="md"
+      boxShadow="xl"
+      maxW="600px"
+      mx="auto"
+      transition="transform 0.3s ease, box-shadow 0.3s ease"
+      _hover={{
+        transform: 'scale(1.05)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+      }}
+    >
+      <Flex alignItems="center" mb={6}>
+        <Avatar
+          name={user?.name}
+          src=""
+          size="xl"
+          bg="teal.500"
+          transition="all 0.3s ease"
+          _hover={{
+            transform: 'rotate(360deg)',
+            boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+          }}
+        />
         <Box ml={4}>
-          <Heading size="lg">{user.name}</Heading>
-          <Text color="gray.500">{user.email}</Text>
+          <Heading size="lg" color="teal.700">{user?.name}</Heading>
+          <Text color="gray.600" fontSize="sm">{user?.email}</Text>
+        </Box>
+      </Flex>
+
+      <Box mt={4} color="gray.700">
+        <Box mb={4}>
+          <Text fontWeight="bold" fontSize="lg">Phone Number:</Text>
+          <Flex alignItems="center">
+            <Icon as={FaPhone} color="teal.500" mr={2} />
+            <Text>{user?.phonenumber || "Not provided"}</Text>
+          </Flex>
+        </Box>
+
+        <Box mb={4}>
+          <Text fontWeight="bold" fontSize="lg">Role:</Text>
+          <Flex alignItems="center">
+            <Icon as={FaUser} color="teal.500" mr={2} />
+            <Text>{user?.role}</Text>
+          </Flex>
+        </Box>
+
+        <Box mb={4}>
+          <Text fontWeight="bold" fontSize="lg">Email Status:</Text>
+          <Flex alignItems="center">
+            <Icon as={FaEnvelope} color="teal.500" mr={2} />
+            <Text>{user?.statusemail}</Text>
+          </Flex>
+        </Box>
+
+        <Box mb={4}>
+          <Text fontWeight="bold" fontSize="lg">Account Status:</Text>
+          <Flex alignItems="center">
+            <Icon as={FaLock} color="teal.500" mr={2} />
+            <Text>{user?.statusaccount}</Text>
+          </Flex>
         </Box>
       </Box>
     </Box>

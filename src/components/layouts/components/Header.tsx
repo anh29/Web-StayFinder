@@ -1,9 +1,7 @@
 import { ChevronDownIcon, HamburgerIcon } from "@chakra-ui/icons";
 import {
-  Avatar,
   Box,
   Button,
-  Icon,
   IconButton,
   List,
   Menu,
@@ -16,43 +14,31 @@ import {
 import ElementEffect from "components/shared/effect/ElementEffect";
 import { headerNavDummy } from "data/common.dummy";
 import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { useState, useContext } from "react";
 import { HeaderNav } from "types/common";
 import { handleScrollToTop } from "utils/common";
-import { getCookie, deleteCookie } from "utils/cookie";
+import { UserContext } from "context/UserContext";
 import UserMenu from "components/elements/UserMenu";
 import MenuItems from "components/elements/MenuItems";
+import { deleteCookie } from "utils/cookie";
 
 export interface HeaderProps {}
 
 export default function Header(props: HeaderProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const location = useLocation();
-  const [user, setUser] = useState<string | null>("");
-
-  const checkUserCookie = () => {
-    const cookieUser = getCookie("username");
-    if (cookieUser !== user) {
-      setUser(cookieUser);
-    }
-  };
-
-  useEffect(() => {
-    checkUserCookie(); 
-
-    const interval = setInterval(checkUserCookie, 1000); 
-
-    return () => clearInterval(interval); 
-  }, [user]);
+  const { user, setUser, setLoggedIn } = useContext(UserContext);
 
   const handleToggleMenu = () => {
     setIsOpen((prev) => !prev);
   };
 
   const handleLogout = () => {
-    deleteCookie("username");
+    deleteCookie("token");
+    deleteCookie("statusemail");
+    deleteCookie("email");
     setUser(null);
+    setLoggedIn(false);
   };
 
   const renderMenu = (

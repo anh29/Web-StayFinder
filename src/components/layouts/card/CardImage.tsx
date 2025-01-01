@@ -2,7 +2,7 @@ import { BoxProps, TextProps, Box, Image, Text, useTheme } from "@chakra-ui/reac
 import { motion } from "framer-motion";
 
 export interface CardImageProps extends BoxProps {
-  src: string;
+  src?: string;
   alt?: string;
   overlayText?: string;
   overlayProps?: TextProps;

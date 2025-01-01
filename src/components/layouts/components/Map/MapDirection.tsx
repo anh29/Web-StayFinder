@@ -1,9 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   SkeletonText,
   Flex,
   Box,
-  VStack,
   Heading,
 } from "@chakra-ui/react";
 import {
@@ -16,6 +15,8 @@ import { REACT_APP_GOOGLE_MAPS_API_KEY } from "index";
 import { calculateRoute, handleMapLoad, handleMapClick } from "./MapHelper";
 import CustomToast from "../../../elements/CustomToast";
 import MapControls from "./MapControls";
+import { getHotels } from "api/hotelService";
+import { Hotel } from "types/hotel";
 
 
 const center = { lat: 16.073671, lng: 108.149865 };
@@ -57,9 +58,35 @@ const MapDirection = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<{ title: string; description?: string; variant: "success" | "error" | "info" | "warning" } | null>(null);
+  const [hotels, setHotels] = useState<Hotel[]>([]);
+  const [locations, setLocations] = useState<{ name: string; lat: number; lng: number }[]>([]);
 
   const originRef = useRef<HTMLInputElement>(null);
   const destinationRef = useRef<HTMLInputElement>(null);
+useEffect(() => {
+    const loadHotels = async () => {
+      try {
+        const hotels = await getHotels();
+        if (typeof hotels === 'string') {
+          setError(hotels);
+        } else {
+          setHotels(hotels);
+          const hotelLocations = hotels.map(hotel => ({
+            name: hotel.name,
+            lat: hotel.location.lat,
+            lng: hotel.location.Lng,
+          }));
+          setLocations(hotelLocations);
+        }
+      } catch (err) {
+        setError("Failed to fetch hotels. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadHotels();
+  }, []);
 
   const handleRouteClick = async () => {
     if (!origin || !destination) {
@@ -131,7 +158,7 @@ const MapDirection = () => {
     <GoogleMap
       key={mapKey}
       center={center}
-      zoom={15}
+      zoom={6}
       mapContainerStyle={{ width: "100%", height: "100%" }}
       options={{
         zoomControl: true,
@@ -139,7 +166,7 @@ const MapDirection = () => {
         mapTypeControl: false,
         fullscreenControl: false,
       }}
-      onLoad={(map) => handleMapLoad(map, LOCATIONS)}
+      onLoad={(map) => handleMapLoad(map, locations)}
       onClick={(e) =>
         handleMapClick(
           e,
@@ -151,7 +178,7 @@ const MapDirection = () => {
         )
       }
     >
-      {LOCATIONS.map((loc, index) => (
+      {locations.length > 0 && locations.map((loc, index) => (
         <Marker
           key={index}
           position={{ lat: loc.lat, lng: loc.lng }}

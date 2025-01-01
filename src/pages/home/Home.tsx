@@ -15,24 +15,26 @@ export default function Home() {
         arrowCount={3}
         colors={["#0ab3c4", "#ADD8E6"]}
         arrowProps={{ w: "2rem", h: "2rem" }}
-        wrapperProps={{ display: { base: "flex", md: "block" }, justifySelf: "center", mt: { base: "0", md: "2rem"} }}
+        wrapperProps={{
+          display: { base: "flex", md: "block" },
+          justifySelf: "center",
+          mt: { base: "0", md: "2rem" },
+        }}
       />
       <MostPickedSection />
-      <BannerArrowDown
-        arrowCount={3}
-        colors={["#0ab3c4", "#ADD8E6"]}
-        arrowProps={{ w: "2rem", h: "2rem" }}
-        wrapperProps={{ display: { base: "flex", md: "block" }, justifySelf: "center", mt: "2rem" }}
-      />
-      <PopularChoiceSection />
+      <Box display={{ base: "block", md: "none" }} mb='16' />
       <Box display={{ base: "none", md: "block" }}>
-      <BannerArrowDown
-        arrowCount={3}
-        colors={["#0ab3c4", "#ADD8E6"]}
-        arrowProps={{ w: "2rem", h: "2rem" }}
-        wrapperProps={{ display: { base: "flex", md: "block" }, justifySelf: "center", mt: "2rem" }}
-      />
-      <MapDirection />
+        <BannerArrowDown
+          arrowCount={3}
+          colors={["#0ab3c4", "#ADD8E6"]}
+          arrowProps={{ w: "2rem", h: "2rem" }}
+          wrapperProps={{
+            display: { base: "flex", md: "block" },
+            justifySelf: "center",
+            mt: "2rem",
+          }}
+        />
+        <MapDirection />
       </Box>
     </Box>
   );

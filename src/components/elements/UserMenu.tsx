@@ -1,14 +1,15 @@
 import React from 'react';
 import { Box, Avatar, Text, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
+import { User } from 'types/user';
 
-const UserMenu: React.FC<{ user: string | null; handleLogout: () => void }> = ({ user, handleLogout }) => {
+const UserMenu: React.FC<{ user: User | null; handleLogout: () => void }> = ({ user, handleLogout }) => {
   return (
     <Box display="flex" justifyContent="flex-end" px="1rem">
       {user ? (
         <Menu>
           <MenuButton display="flex" alignItems="center" gap="1rem">
-            <Avatar name={user} size="md" bg="#06B3C4" />
+            <Avatar name={user.name} size="md" bg="#06B3C4" />
           </MenuButton>
           <MenuList>
             <MenuItem as={Link} to="/profile">

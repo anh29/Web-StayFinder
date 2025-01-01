@@ -1,8 +1,9 @@
 import { SimpleGrid, Box, Image, Text, Badge, HStack, keyframes } from "@chakra-ui/react";
-import { EnhancedHotel } from "types/enhancedData"; 
 import { useHistory } from "react-router-dom";
+import { FilterOptions } from "types/config/filter";
+import { Hotel } from "types/hotel";
 
-const HotelGrid = ({ hotels }: { hotels: EnhancedHotel[] }) => {
+const HotelGrid = ({ hotels, filter }: { hotels: Hotel[], filter: Partial<FilterOptions> }) => {
   const history = useHistory();
 
   const hoverEffect = keyframes`
@@ -19,7 +20,7 @@ const HotelGrid = ({ hotels }: { hotels: EnhancedHotel[] }) => {
     <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={6}>
       {hotels.map((hotel) => (
         <Box
-          key={hotel.hotelId}
+          key={hotel._id}
           borderRadius="lg"
           overflow="hidden"
           boxShadow="lg"
@@ -33,10 +34,10 @@ const HotelGrid = ({ hotels }: { hotels: EnhancedHotel[] }) => {
           position="relative"
           bg="white"
           border="2px solid teal"
-          onClick={() => handleCardClick(hotel.hotelId)}
+          onClick={() => handleCardClick(hotel._id)}
         >
           <Image 
-            src={hotel.images[0]} 
+            src={hotel.media[0]} 
             alt={hotel.name} 
             objectFit="cover" 
             h={{ base: "150px", sm: "200px", md: "250px" }} 
@@ -50,29 +51,23 @@ const HotelGrid = ({ hotels }: { hotels: EnhancedHotel[] }) => {
               {hotel.name}
             </Text>
             <Text fontSize="sm" color="gray.600" mb={2} noOfLines={2}>
-              {hotel.location.address}, {hotel.location.city}, {hotel.location.country}
-            </Text>
-            <Text fontSize="md" color="teal.600" fontWeight="semibold" mt={2}>
-              ${hotel.priceRange.min} - ${hotel.priceRange.max} per night
+              {hotel.location.city}, {hotel.location.country}
             </Text>
             <Text fontSize="sm" color="gray.500" mt={1}>
               Rating: {hotel.rating.toFixed(1)} ⭐
             </Text>
             <Text fontSize="sm" color="gray.500" mt={1}>
-              Check-in: {hotel.checkInTime} | Check-out: {hotel.checkOutTime}
-            </Text>
-            <Text fontSize="sm" color="gray.500" mt={1}>
-              Cancellation: {hotel.cancellationPolicy}
+              Check-in: {filter.checkInDate} | Check-out: {filter.checkOutDate}
             </Text>
             <HStack mt={2} spacing={1} wrap="wrap" justify="center" gap={'10px'}>
-              {hotel.facilities.slice(0, 4).map((facility, index) => (
+              {hotel.amenities.slice(0, 4).map((facility, index) => (
                 <Badge key={index} colorScheme="teal" borderRadius="full" px={2} py={1} fontSize={{ base: "sm", md: "md" }}>
                   {facility}
                 </Badge>
               ))}
-              {hotel.facilities.length > 4 && (
+              {hotel.amenities.length > 4 && (
                 <Text fontSize={{ base: "sm", md: "md" }} color="gray.500" ml={2}>
-                  +{hotel.facilities.length - 4}
+                  +{hotel.amenities.length - 4}
                 </Text>
               )}
             </HStack>

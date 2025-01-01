@@ -20,3 +20,18 @@ export const loginUser = async (data: { email: string; password: string }) => {
     throw error.response?.data?.message || 'Login failed, please try again.';
   }
 };
+
+export const resetPassword = async (data: { email: string}) => {
+  const response = await apiClient.post('/auth/reset-password', data);
+  return response.data;
+};
+
+export const sendVerifyEmail = async (data: { email: string; }) => {
+  const response = await apiClient.post('/auth/send-verification-code', data);
+  return response.data;
+};
+
+export const verifyCode = async (data: { email: string; code: string; }) => {
+  const response = await apiClient.post('/auth/verify-email', data);
+  return response.data;
+};

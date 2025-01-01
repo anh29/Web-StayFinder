@@ -26,7 +26,7 @@ const SearchLocation: React.FC<SearchLocationProps> = ({
         const place = autocomplete.getPlace();
         if (place && place.formatted_address) {
           onLocationSelect(place.formatted_address);
-          setInputValue(place.formatted_address); // Set the input value to the formatted address
+          setInputValue(place.formatted_address); 
         }
       });
     }
@@ -34,7 +34,7 @@ const SearchLocation: React.FC<SearchLocationProps> = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
-    setInputValue(query); // Update the input value state
+    setInputValue(query); 
 
     if (query) {
       setLoading(true);
@@ -57,16 +57,16 @@ const SearchLocation: React.FC<SearchLocationProps> = ({
   const handleSuggestionClick = (
     prediction: google.maps.places.AutocompletePrediction
   ) => {
-    onLocationSelect(prediction.description);
-    setInputValue(prediction.description); // Update the input value when a suggestion is clicked
-    setSuggestions([]); // Clear suggestions after selection
+    onLocationSelect(prediction.structured_formatting.main_text); 
+    setInputValue(prediction.structured_formatting.main_text); 
+    setSuggestions([]); 
   };
 
   return (
     <Box>
       <Input
         ref={inputRef}
-        value={inputValue} // Bind the input value to the state
+        value={inputValue} 
         placeholder="Search for a location"
         size="md"
         variant="outline"

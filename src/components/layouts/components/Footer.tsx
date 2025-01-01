@@ -65,26 +65,6 @@ export default function Footer(props: FooterProps) {
             </Flex>
           </Box>
 
-          {/* Call to Action Section */}
-          <Box textAlign={{ base: 'center', md: 'left' }}>
-            <Heading as="h4" fontSize="1.5rem" fontWeight="bold" mb={2}>
-              Đăng ký nhận tin
-            </Heading>
-            <Text mb={4}>Nhận thông tin cập nhật và ưu đãi đặc biệt.</Text>
-            <Flex justifyContent={{ base: 'center', md: 'flex-start' }}>
-              <Input
-                type="email"
-                placeholder="Email của bạn"
-                size="md"
-                borderColor="gray.600"
-                _focus={{ borderColor: 'teal.400' }}
-                mr={2}
-                width={{ base: '100%', md: '250px' }}
-              />
-              <Button colorScheme="teal" variant="solid">Đăng ký</Button>
-            </Flex>
-          </Box>
-
           {/* Contact Section */}
           <Box textAlign={{ base: 'center', md: 'left' }}>
             <Heading as="h4" fontSize="1.5rem" fontWeight="bold" mb={4}>
@@ -100,7 +80,7 @@ export default function Footer(props: FooterProps) {
               <ListItem display="flex" alignItems="center" justifyContent={{ base: 'center', md: 'flex-start' }}>
                 <Icon as={IoMdMail} w="2rem" h="2rem" color="gray.300" />
                 <Text ml={2}>
-                  partnership.stayfinder@gmail.com
+                  stayfindera@gmail.com
                 </Text>
               </ListItem>
             </List>

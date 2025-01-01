@@ -1,15 +1,22 @@
 import React from "react";
 import { Box, Text, VStack, HStack, Icon, Avatar, Flex, Image } from "@chakra-ui/react";
 import { FaStar } from "react-icons/fa";
-import { ReviewHash } from "types/data";
+import { Review } from "types/user";
+import { API_URL } from "constants/app";
 
 interface ReviewsProps {
-  reviews: ReviewHash[];
+  reviews: Review[] | string;
 }
 
 const Reviews: React.FC<ReviewsProps> = ({ reviews }) => {
+  if (typeof reviews === "string") {
+    return <Text color="gray.500">{reviews}</Text>;
+  }
+
+  const fallbackImage = "https://picsum.photos/800/400"; // Fallback image URL
+
   return (
-    <Box mt={8} p={4} >
+    <Box mt={4} p={4}>
       <Text fontSize="2xl" fontWeight="bold" color="gray.800">Customer Reviews</Text>
       <VStack spacing={6} align="stretch" mt={6} maxH="600px" overflowY="auto">
         {reviews.map((review, index) => (
@@ -23,10 +30,10 @@ const Reviews: React.FC<ReviewsProps> = ({ reviews }) => {
             _hover={{ transform: "scale(1.02)", transition: "0.2s", boxShadow: "lg" }}
           >
             <HStack spacing={4} align="center">
-              <Avatar name={`User ${review.userHash.slice(0, 6)}`} size="md" />
+              <Avatar name={`User ${review.user.name.slice(0, 6)}`} size="md" />
               <VStack align="start" spacing={1} flex="1">
                 <Text fontWeight="bold" color="gray.700" fontSize="lg">
-                  User {review.userHash.slice(0, 6)}
+                  User {review.user.name.slice(0, 6)}
                 </Text>
                 <Flex align="center">
                   <HStack spacing={1}>
@@ -41,24 +48,37 @@ const Reviews: React.FC<ReviewsProps> = ({ reviews }) => {
                   </HStack>
                 </Flex>
               </VStack>
-              <Text fontSize="sm" color="gray.500">{new Date(review.timestamp).toLocaleDateString()}</Text>
+              <Text fontSize="sm" color="gray.500">{new Date(review.createdAt).toLocaleDateString()}</Text>
             </HStack>
-            
-            {/* Display the image if it exists */}
-            {review.imgUrl && (
-              <Box mt={4}>
+
+            {/* Display images or fallback */}
+            <Box mt={4}>
+              {review.media?.length > 0 ? (
+                review.media.map((url, idx) => (
+                  <Image 
+                    key={idx} 
+                    src={`${API_URL}${url}`} 
+                    alt={`Review Image ${idx + 1}`} 
+                    maxHeight="200px" 
+                    width="100%" 
+                    objectFit="cover" 
+                    borderRadius="md" 
+                    mb={2} 
+                  />
+                ))
+              ) : (
                 <Image 
-                  src={review.imgUrl} 
-                  alt="Review Image" 
+                  src={fallbackImage} 
+                  alt="Fallback Review Image" 
                   maxHeight="200px" 
                   width="100%" 
                   objectFit="cover" 
                   borderRadius="md" 
                 />
-              </Box>
-            )}
+              )}
+            </Box>
 
-            <Text mt={4} fontSize="md" color="gray.600">{review.content}</Text>
+            <Text mt={4} fontSize="md" color="gray.600">{review.comment}</Text>
           </Box>
         ))}
       </VStack>

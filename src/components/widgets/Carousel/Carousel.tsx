@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Flex, BoxProps, ButtonProps } from "@chakra-ui/react";
 import CarouselButton from "./CarouselButton";
 
-interface CarouselProps {
-  items: React.ReactNode[];
-  itemsPerPage: number;
+export interface CarouselProps {
+  items?: React.ReactNode[];
+  itemsPerPage?: number;
   cardWidth: number;
   spacing?: number;
   wrapperProps?: BoxProps;
@@ -16,12 +16,12 @@ interface CarouselProps {
 
 const Carousel: React.FC<CarouselProps> = ({
   items,
-  itemsPerPage,
-  cardWidth,
+  itemsPerPage = 1,
+  cardWidth = 300,
   spacing = 16,
   wrapperProps,
   buttonProps,
-  autoPlay = false,
+  autoPlay = true,
   autoPlayInterval = 3000,
   transitionDuration = "0.3s",
 }) => {

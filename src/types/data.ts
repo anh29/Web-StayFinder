@@ -63,15 +63,15 @@ export type Availability = {
 };
 
 export type Booking = {
-  bookingId: string;
-  userId: string;
-  hotelId: string;
-  roomId: string;
-  checkInDate: string;
-  checkOutDate: string;
-  totalPrice: number;
-  currency: string;
-  status: 'confirmed' | 'pending' | 'cancelled';
+  bookingId?: string;
+  userId?: string;
+  hotelId?: string;
+  roomId?: string;
+  checkInDate?: string;
+  checkOutDate?: string;
+  totalPrice?: number;
+  paymentMethod: string;
+  status?: string;
 };
 
 export type Promotion = {

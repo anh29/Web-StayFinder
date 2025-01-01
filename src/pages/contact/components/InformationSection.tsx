@@ -12,19 +12,15 @@ const InformationSection = () => {
           <Heading as="h2" fontSize="3xl" color="#06B3C4" textAlign="center" mb={6}>
             Get in Touch
           </Heading>
-          <Grid templateColumns={{ base: '1fr', md: 'repeat(3, 1fr)' }} gap={10}>
+          <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={10}>
             {[{
               icon: FaEnvelope,
               title: "Email Us",
-              description: "contact@yourdomain.com"
+              description: "anhhna17710110@gmail.com"
             }, {
               icon: FaPhone,
               title: "Call Us",
               description: "+1 234 567 890"
-            }, {
-              icon: FaMapMarkerAlt,
-              title: "Visit Us",
-              description: "123 Your Street, City, Country"
             }].map((info, index) => (
               <MotionBox
                 key={index}

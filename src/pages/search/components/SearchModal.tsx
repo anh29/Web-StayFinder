@@ -1,10 +1,10 @@
-import { Box, Button, Select, Stack, Text, useBreakpointValue, useToast, HStack, Spinner, Tooltip } from "@chakra-ui/react";
+import { Box, Button, Select, Stack, Text, useBreakpointValue, useToast, HStack, Input, Tooltip, Spinner } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { PERSON_OPTIONS } from "data/constants";
 import SearchLocation from "components/elements/SearchLocation";
-import DateSelection from "components/layouts/DateSection";
+import CustomDatePicker from "components/layouts/CustomDatePicker";
 
 interface SearchModalProps {
   onClose: () => void;
@@ -22,13 +22,19 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
   const size = useBreakpointValue({ base: "md", md: "lg" });
   const history = useHistory();
 
-  const formatDate = (date: Date | null): string => {
-    return date ? date.toISOString().slice(0, 10) : "";
+  const formatDate = (date: Date | null): string => (date ? date.toISOString().slice(0, 10) : "");
+
+  const increaseDateByOneDay = (date: Date | null): Date | null => {
+    if (!date) return null;
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + 1); // Add 1 day
+    return newDate;
   };
 
   const handleSearch = () => {
     const { location, checkInDate, checkOutDate, persons } = searchParams;
 
+    // Validation: Ensure all fields are filled
     if (!location || !checkInDate || !checkOutDate) {
       toast({
         title: "Missing Information",
@@ -40,10 +46,29 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
       return;
     }
 
-    const query = `?location=${encodeURIComponent(location)}&checkIn=${formatDate(checkInDate)}&checkOut=${formatDate(checkOutDate)}&persons=${persons}`;
-    setLoading(true);
+    // Validation: Ensure check-out date is after check-in date
+    if (checkInDate > checkOutDate) {
+      toast({
+        title: "Invalid Date Range",
+        description: "Check-out date must be after check-in date.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    // Increase the dates by 1 day before passing them
+    const adjustedCheckInDate = increaseDateByOneDay(checkInDate);
+    const adjustedCheckOutDate = increaseDateByOneDay(checkOutDate);
+
+    const query = `?location=${encodeURIComponent(location)}&checkIn=${formatDate(adjustedCheckInDate)}&checkOut=${formatDate(adjustedCheckOutDate)}&persons=${persons}`;
+    
+    setLoading(true); // Start loading
     history.push(`/search${query}`);
-    onClose();
+    onClose(); // Close the modal after search
+
+    // Show success toast
     toast({
       title: "Search Initiated",
       description: "Your search has been started.",
@@ -51,12 +76,19 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
       duration: 3000,
       isClosable: true,
     });
-    setLoading(false); // Set loading to false after the search is initiated
+
+    setLoading(false); // Stop loading
   };
 
-  const handleLocationSelect = (description: string) => {
-    setSearchParams((prev) => ({ ...prev, location: description }));
+  const handleClear = () => {
+    setSearchParams({
+      location: '',
+      checkInDate: null,
+      checkOutDate: null,
+      persons: 1,
+    });
   };
+
   return (
     <Box
       borderRadius="lg"
@@ -71,6 +103,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
       <Text fontSize="3xl" fontWeight="bold" color="teal.600" textAlign="center" mb={6}>
         Find Your Perfect Stay
       </Text>
+
       {loading ? (
         <HStack spacing={2} justify="center">
           <Spinner size="lg" color="teal.500" />
@@ -79,13 +112,21 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
       ) : (
         <Stack spacing={4}>
           <Text fontSize="xl" fontWeight="semibold">Location</Text>
-          <SearchLocation onLocationSelect={handleLocationSelect} />
+          <SearchLocation
+            onLocationSelect={(description) => setSearchParams((prev) => ({ ...prev, location: description }))}
+          />
+
           <Text fontSize="xl" fontWeight="semibold">Dates</Text>
-          <DateSelection
-            checkInDate={searchParams.checkInDate}
-            setCheckInDate={(date) => setSearchParams((prev) => ({ ...prev, checkInDate: date }))}
-            checkOutDate={searchParams.checkOutDate}
-            setCheckOutDate={(date) => setSearchParams((prev) => ({ ...prev, checkOutDate: date }))}
+          <CustomDatePicker
+            value={{
+              from: searchParams.checkInDate,
+              to: searchParams.checkOutDate,
+            }}
+            onChange={({ from, to }) => setSearchParams((prev) => ({
+              ...prev,
+              checkInDate: from,
+              checkOutDate: to,
+            }))}
           />
 
           <Text fontSize="xl" fontWeight="semibold">Number of Persons</Text>
@@ -122,6 +163,9 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
               }}
               transition="all 0.3s"
               onClick={handleSearch}
+              isLoading={loading} // Display loading state on the button
+              loadingText="Searching..."
+              isDisabled={loading} // Disable the button when loading
             >
               <SearchIcon mr={2} />
               Search
@@ -129,14 +173,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ onClose }) => {
             <Button
               size={size}
               variant="outline"
-              onClick={() => {
-                setSearchParams({
-                  location: '',
-                  checkInDate: null,
-                  checkOutDate: null,
-                  persons: 1,
-                });
-              }}
+              onClick={handleClear}
             >
               Clear
             </Button>

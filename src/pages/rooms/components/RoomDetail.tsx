@@ -1,76 +1,55 @@
 import { Box, Text, SimpleGrid, Tag, Heading, Flex, Button, useBreakpointValue, Spinner, Icon, useToast } from "@chakra-ui/react";
 import { FC, useState } from "react";
-import { Booking, Room } from "types/data";
 import RoomImageCarousel from "./RoomImageCarousel";
-import { FaWifi, FaWind, FaTv, FaSwimmer } from "react-icons/fa"; 
 import BookingModal from "components/booking/BookingModal"; 
 import { useHistory } from "react-router-dom";
+import { Room } from "types/room";
+import { getCookie } from "utils/cookie";
 
-interface RoomDetailProps {
+interface RoomDetailComponentProps {
   room: Room;
 }
 
-const RoomDetail: FC<RoomDetailProps> = ({ room }) => {
-  const { price, capacity, amenities, type, hotelId } = room;
+const RoomDetailComponent: FC<RoomDetailComponentProps> = ({ room }) => {
+  const { price, capacity, amenities, roomType, media } = room;
+  const history = useHistory();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isBooking, setIsBooking] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); 
   const isMobile = useBreakpointValue({ base: true, sm: false });
-  const history = useHistory();
+  const token = getCookie('token');
   const toast = useToast();
 
   const nextImage = () => {
-    if (room?.images?.length) {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % room.images.length);
+    if (media?.length) {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % media.length);
     }
   };
 
   const prevImage = () => {
-    if (room?.images?.length) {
+    if (media?.length) {
       setCurrentIndex((prevIndex) =>
-        prevIndex === 0 ? room.images.length - 1 : prevIndex - 1
+        prevIndex === 0 ? media.length - 1 : prevIndex - 1
       );
     }
   };
-
-  const images = room?.images ?? [];
-
   
   const handleBooking = () => {
+    if (!token) {
+      toast({
+        title: "Authentication required.",
+        description: "Please log in to book a room.",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+      history.push('/login');
+    }
     setIsBooking(true);
     setTimeout(() => {
       setIsBooking(false); 
       setIsModalOpen(true); 
     }, 2000);
-  };
-
-  
-  const amenitiesIcons: { [key: string]: React.ReactNode } = {
-    "WiFi": <FaWifi />,
-    "Air Conditioning": <FaWind />,
-    "Minibar": <FaTv />,
-    "Balcony": <FaSwimmer />,
-  };
-
-
-  const confirmBooking = async (booking: Booking) => {
-    try {
-      toast({
-        title: "Booking Successful!",
-        description: `You have booked the ${room.type} for €${room.price} per night.`,
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      });
-    } catch (error) {
-      toast({
-        title: "Booking Failed",
-        description: "There was an error processing your booking.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
   };
 
   return (
@@ -89,7 +68,7 @@ const RoomDetail: FC<RoomDetailProps> = ({ room }) => {
       mb={8}
     >
       <RoomImageCarousel
-        images={images}
+        images={media}
         currentIndex={currentIndex}
         onNext={nextImage}
         onPrev={prevImage}
@@ -106,7 +85,7 @@ const RoomDetail: FC<RoomDetailProps> = ({ room }) => {
         boxShadow="sm"
       >
         <Text fontSize={isMobile ? "xl" : "2xl"} color="gray.700">
-          {type} {/* Display Room Type */}
+          {roomType} {/* Display Room Type */}
         </Text>
       </Box>
 
@@ -121,7 +100,7 @@ const RoomDetail: FC<RoomDetailProps> = ({ room }) => {
         boxShadow="md"
       >
         <Text fontSize={isMobile ? "xl" : "3xl"} color="teal.500">
-          {price} 000 VND
+          {price} VND
           <Text as="span" fontSize={isMobile ? "md" : "lg"} color="gray.600"> / night</Text>
         </Text>
       </Box>
@@ -154,8 +133,6 @@ const RoomDetail: FC<RoomDetailProps> = ({ room }) => {
               bg: "teal.100",
             }}
           >
-            {/* Display icon if available */}
-            <Box mr={2}>{amenitiesIcons[amenity] || null}</Box>
             {amenity}
           </Tag>
         ))}
@@ -189,11 +166,9 @@ const RoomDetail: FC<RoomDetailProps> = ({ room }) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         room={room}
-        onConfirm={confirmBooking}
-        onRedirect={() => history.push("/history")}
       />
     </Box>
   );
 };
 
-export default RoomDetail;
+export default RoomDetailComponent;

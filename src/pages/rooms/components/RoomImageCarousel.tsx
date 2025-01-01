@@ -1,5 +1,5 @@
-// RoomImageCarousel.tsx
 import { Box, Button, Image, Flex } from "@chakra-ui/react";
+import { API_URL } from "constants/app";
 import { FC } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
@@ -11,10 +11,13 @@ interface RoomImageCarouselProps {
 }
 
 const RoomImageCarousel: FC<RoomImageCarouselProps> = ({ images, currentIndex, onNext, onPrev }) => {
+  // Fallback image when no media is provided
+  const fallbackImage = "https://picsum.photos/800/400";
+
   return (
     <Box position="relative" width="full" height="400px" borderRadius="lg" overflow="hidden">
       <Image
-        src={images[currentIndex]}
+        src={images.length > 0 ? `${API_URL}${images[currentIndex]}` : fallbackImage}
         alt="Room Image"
         borderRadius="lg"
         boxSize="full"

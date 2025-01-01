@@ -11,10 +11,6 @@ export const headerNavDummy: HeaderNav[] = [
         href: "/#most-picked",
       },
       {
-        title: "Popular Choices",
-        href: "/#popular-choices",
-      },
-      {
         title: "Directions",
         href: "/#directions",
       },
@@ -29,10 +25,5 @@ export const headerNavDummy: HeaderNav[] = [
     title: "About",
     href: "/about",
     icon: FaUsers,
-  },
-  {
-    title: "Contact",
-    href: "/contact",
-    icon: FaPhone,
   },
 ];
